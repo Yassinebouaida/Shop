@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Temu ربح">
+<meta name="theme-color" content="#f59e0b">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>تتبع أرباح Temu</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0f0f;
+    --surface: #1a1a1a;
+    --surface2: #242424;
+    --surface3: #2e2e2e;
+    --border: rgba(255,255,255,0.08);
+    --text: #f0f0f0;
+    --muted: #888;
+    --green: #22c55e;
+    --green-dim: rgba(34,197,94,0.12);
+    --blue: #3b82f6;
+    --blue-dim: rgba(59,130,246,0.12);
+    --red: #ef4444;
+    --red-dim: rgba(239,68,68,0.12);
+    --amber: #f59e0b;
+    --amber-dim: rgba(245,158,11,0.12);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body { font-family: 'Cairo', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: 3rem; }
+
+  .header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 1rem 1.2rem 0.8rem; position: sticky; top: 0; z-index: 10; }
+  .header h1 { font-size: 18px; font-weight: 700; }
+  .header h1 span { color: var(--amber); }
+  .header p { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  .tabs { display: flex; background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 58px; z-index: 9; }
+  .tab { flex: 1; padding: 10px 4px; font-family: 'Cairo', sans-serif; font-size: 13px; font-weight: 700; color: var(--muted); background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; transition: color 0.2s, border-color 0.2s; text-align: center; }
+  .tab.active { color: var(--amber); border-bottom-color: var(--amber); }
+
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* STATS */
+  .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 1rem; }
+  .stat { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 14px; }
+  .stat.wide { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; }
+  .stat-label { font-size: 11px; color: var(--muted); margin-bottom: 5px; }
+  .stat-val { font-size: 19px; font-weight: 700; line-height: 1; }
+  .stat-val.g { color: var(--green); }
+  .stat-val.b { color: var(--blue); }
+  .stat-val.r { color: var(--red); }
+  .stat-val.w { color: var(--text); }
+
+  /* FORM */
+  .form-section { margin: 0 1rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 18px; overflow: hidden; }
+  .form-header { padding: 12px 16px; border-bottom: 1px solid var(--border); font-weight: 700; color: var(--muted); font-size: 11px; letter-spacing: 0.5px; text-transform: uppercase; }
+  .form-body { padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .field-label { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+
+  input[type="text"], input[type="number"], input[type="date"], textarea {
+    width: 100%; background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 11px 13px; font-size: 14px;
+    font-family: 'Cairo', sans-serif; color: var(--text); outline: none; transition: border-color 0.2s;
+  }
+  textarea { resize: none; height: 72px; line-height: 1.5; }
+  input:focus, textarea:focus { border-color: rgba(59,130,246,0.5); }
+  input::placeholder, textarea::placeholder { color: var(--muted); font-size: 13px; }
+  input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1) opacity(0.4); }
+
+  /* IMAGE UPLOAD */
+  .img-upload-area {
+    border: 1.5px dashed var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    background: var(--surface2);
+    position: relative;
+  }
+  .img-upload-area:active { background: var(--surface3); }
+  .img-upload-area input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+  .img-upload-icon { font-size: 24px; display: block; margin-bottom: 4px; }
+  .img-upload-text { font-size: 12px; color: var(--muted); }
+  .img-preview-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 8px; }
+  .img-preview-wrap { position: relative; aspect-ratio: 1; border-radius: 8px; overflow: hidden; }
+  .img-preview-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .img-remove-btn { position: absolute; top: 3px; left: 3px; background: rgba(0,0,0,0.7); color: #fff; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1; }
+
+  .btn-add { width: 100%; padding: 13px; background: var(--blue); color: #fff; font-family: 'Cairo', sans-serif; font-size: 15px; font-weight: 700; border: none; border-radius: 12px; cursor: pointer; transition: opacity 0.15s, transform 0.1s; }
+  .btn-add:active { opacity: 0.85; transform: scale(0.98); }
+
+  /* ORDER CARDS */
+  .orders-section { padding: 0 1rem; }
+  .section-title { font-size: 12px; font-weight: 700; color: var(--muted); letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 10px; }
+
+  .order-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 14px; margin-bottom: 10px; animation: slideIn 0.25s ease; }
+  @keyframes slideIn { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
+
+  .order-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+  .order-name { font-size: 15px; font-weight: 700; }
+  .order-date { font-size: 11px; color: var(--muted); margin-top: 3px; }
+  .order-address { font-size: 11px; color: var(--muted); margin-top: 3px; display: flex; align-items: flex-start; gap: 3px; }
+  .order-profit-badge { background: var(--green-dim); color: var(--green); font-size: 13px; font-weight: 700; padding: 4px 10px; border-radius: 20px; white-space: nowrap; }
+
+  /* Product images inside card */
+  .order-imgs { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+  .order-img { width: 56px; height: 56px; border-radius: 8px; object-fit: cover; border: 1px solid var(--border); cursor: pointer; }
+
+  .order-details { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .detail-box { background: var(--surface2); border-radius: 10px; padding: 9px 11px; }
+  .detail-label { font-size: 10px; color: var(--muted); margin-bottom: 3px; }
+  .detail-val { font-size: 13px; font-weight: 700; }
+  .detail-val.b { color: var(--blue); }
+  .detail-val.r { color: var(--red); }
+
+  .order-footer { display: flex; justify-content: flex-end; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
+  .btn-del { background: var(--red-dim); color: var(--red); border: none; font-family: 'Cairo', sans-serif; font-size: 12px; font-weight: 700; padding: 5px 12px; border-radius: 8px; cursor: pointer; }
+  .btn-del:active { opacity: 0.7; }
+
+  /* MONTHLY */
+  .month-page { padding: 1rem; }
+  .month-selector { display: flex; align-items: center; justify-content: space-between; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 12px 16px; margin-bottom: 1rem; }
+  .month-nav { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 20px; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; cursor: pointer; user-select: none; }
+  .month-nav:active { opacity: 0.6; }
+  .month-label { font-size: 17px; font-weight: 700; color: var(--amber); }
+  .month-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1rem; }
+  .mcard { border-radius: 14px; padding: 16px 14px; border: 1px solid var(--border); }
+  .mcard.gr { background: var(--green-dim); border-color: rgba(34,197,94,0.2); }
+  .mcard.rd { background: var(--red-dim); border-color: rgba(239,68,68,0.2); }
+  .mcard.bl { background: var(--blue-dim); border-color: rgba(59,130,246,0.2); }
+  .mcard.am { background: var(--amber-dim); border-color: rgba(245,158,11,0.2); }
+  .mcard.full { grid-column:1/-1; background: var(--surface); display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; }
+  .mcard-label { font-size: 11px; color: var(--muted); margin-bottom: 6px; }
+  .mcard-val { font-size: 21px; font-weight: 700; line-height: 1.1; }
+  .mcard-val.g { color: var(--green); }
+  .mcard-val.r { color: var(--red); }
+  .mcard-val.b { color: var(--blue); }
+  .mcard-val.a { color: var(--amber); }
+  .bar-wrap { margin-bottom: 1.2rem; }
+  .bar-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-bottom: 6px; }
+  .bar-track { background: var(--surface2); border-radius: 99px; height: 8px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 99px; background: var(--green); transition: width 0.6s ease; }
+  .month-orders-title { font-size: 12px; font-weight: 700; color: var(--muted); letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 10px; }
+  .morder-row { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 11px 14px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+  .morder-name { font-size: 14px; font-weight: 700; }
+  .morder-date { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .morder-profit { font-size: 13px; font-weight: 700; color: var(--green); text-align: left; }
+  .morder-cost { font-size: 11px; color: var(--red); margin-top: 2px; text-align: left; }
+
+  /* LIGHTBOX */
+  .lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 999; align-items: center; justify-content: center; }
+  .lightbox.open { display: flex; }
+  .lightbox img { max-width: 92vw; max-height: 88vh; border-radius: 12px; object-fit: contain; }
+  .lightbox-close { position: absolute; top: 16px; left: 16px; background: rgba(255,255,255,0.15); color: #fff; border: none; font-size: 22px; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+  /* INSTALL BANNER */
+  #install-banner { display: none; margin: 0.8rem 1rem 0; background: var(--amber-dim); border: 1px solid rgba(245,158,11,0.3); border-radius: 14px; padding: 12px 14px; align-items: center; gap: 10px; }
+  #install-banner.show { display: flex; }
+  #install-banner p { flex: 1; font-size: 13px; color: var(--amber); font-weight: 700; }
+  #install-banner small { display: block; font-size: 11px; color: var(--muted); font-weight: 400; margin-top: 2px; }
+  .btn-install { background: var(--amber); color: #0f0f0f; border: none; font-family: 'Cairo', sans-serif; font-size: 13px; font-weight: 700; padding: 8px 14px; border-radius: 10px; cursor: pointer; white-space: nowrap; }
+
+  .empty { text-align: center; color: var(--muted); padding: 3rem 1rem; font-size: 14px; line-height: 2.2; }
+  .empty-icon { font-size: 40px; display: block; margin-bottom: 0.5rem; opacity: 0.5; }
+
+  .toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(80px); color: #fff; font-family: 'Cairo', sans-serif; font-size: 13px; font-weight: 700; padding: 10px 20px; border-radius: 30px; transition: transform 0.3s ease; z-index: 100; white-space: nowrap; }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>تتبع أرباح <span>Temu</span> 📊</h1>
+  <p>بياناتك محفوظة تلقائياً على جهازك</p>
+</div>
+
+<div id="install-banner">
+  <p>📲 ثبّت التطبيق<small>يعمل بدون إنترنت</small></p>
+  <button class="btn-install" onclick="installApp()">تثبيت</button>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('home')">🏠 الرئيسية</button>
+  <button class="tab" onclick="switchTab('monthly')">📅 الشهري</button>
+  <button class="tab" onclick="switchTab('add')">➕ إضافة</button>
+</div>
+
+<!-- ══════════ HOME ══════════ -->
+<div class="page active" id="page-home">
+  <div class="stats">
+    <div class="stat"><div class="stat-label">إجمالي الدخل</div><div class="stat-val b" id="s-income">0.00 درهم</div></div>
+    <div class="stat"><div class="stat-label">صافي الربح الكلي</div><div class="stat-val g" id="s-profit">0.00 درهم</div></div>
+    <div class="stat wide">
+      <div><div class="stat-label">إجمالي التكلفة</div><div class="stat-val r" id="s-cost">0.00 درهم</div></div>
+      <div style="text-align:left;"><div class="stat-label">عدد الطلبات</div><div class="stat-val w" id="s-count">0</div></div>
+    </div>
+  </div>
+  <div class="orders-section">
+    <div class="section-title">سجل الطلبات</div>
+    <div id="orders-list"></div>
+  </div>
+</div>
+
+<!-- ══════════ MONTHLY ══════════ -->
+<div class="page" id="page-monthly">
+  <div class="month-page">
+    <div class="month-selector">
+      <div class="month-nav" onclick="changeMonth(-1)">›</div>
+      <div class="month-label" id="month-label">—</div>
+      <div class="month-nav" onclick="changeMonth(1)">‹</div>
+    </div>
+    <div class="month-grid">
+      <div class="mcard gr"><div class="mcard-label">💰 صافي الربح</div><div class="mcard-val g" id="m-profit">0.00 درهم</div></div>
+      <div class="mcard rd"><div class="mcard-label">🛒 ما صرفته</div><div class="mcard-val r" id="m-cost">0.00 درهم</div></div>
+      <div class="mcard bl"><div class="mcard-label">📥 إجمالي الدخل</div><div class="mcard-val b" id="m-income">0.00 درهم</div></div>
+      <div class="mcard am"><div class="mcard-label">📦 عدد الطلبات</div><div class="mcard-val a" id="m-count">0</div></div>
+      <div class="mcard full">
+        <div><div class="mcard-label">متوسط الربح / طلب</div><div class="mcard-val g" id="m-avg">0.00 درهم</div></div>
+        <div style="text-align:left;"><div class="mcard-label">نسبة الربح</div><div class="mcard-val a" id="m-pct">0%</div></div>
+      </div>
+    </div>
+    <div class="bar-wrap">
+      <div class="bar-labels"><span>نسبة الربح من الدخل</span><span id="m-pct2">0%</span></div>
+      <div class="bar-track"><div class="bar-fill" id="m-bar" style="width:0%"></div></div>
+    </div>
+    <div class="month-orders-title">تفاصيل طلبات الشهر</div>
+    <div id="month-orders-list"></div>
+  </div>
+</div>
+
+<!-- ══════════ ADD ══════════ -->
+<div class="page" id="page-add">
+  <div style="padding:1rem;">
+    <div class="form-section" style="margin:0 0 1rem;">
+      <div class="form-header">إضافة طلب جديد</div>
+      <div class="form-body">
+
+        <div>
+          <div class="field-label">📅 التاريخ</div>
+          <input type="date" id="f-date" />
+        </div>
+
+        <div>
+          <div class="field-label">👤 اسم الزبون</div>
+          <input type="text" id="f-customer" placeholder="مثال: محمد العمراني" />
+        </div>
+
+        <div>
+          <div class="field-label">📍 العنوان</div>
+          <textarea id="f-address" placeholder="المدينة، الحي، رقم المنزل..."></textarea>
+        </div>
+
+        <div class="row2">
+          <div>
+            <div class="field-label">💵 السعر النهائي</div>
+            <input type="number" id="f-amount" placeholder="درهم" min="0" step="0.01" />
+          </div>
+          <div>
+            <div class="field-label">💰 صافي الربح</div>
+            <input type="number" id="f-profit" placeholder="درهم" min="0" step="0.01" />
+          </div>
+        </div>
+
+        <div>
+          <div class="field-label">🚚 سعر التوصيل (اختياري)</div>
+          <input type="number" id="f-delivery" placeholder="درهم" min="0" step="0.01" />
+        </div>
+
+        <div>
+          <div class="field-label">🖼 صور المنتجات (اختياري)</div>
+          <div class="img-upload-area" id="upload-area">
+            <input type="file" id="f-images" accept="image/*" multiple onchange="previewImages(event)" />
+            <span class="img-upload-icon">📷</span>
+            <span class="img-upload-text">اضغط لإضافة صور المنتجات</span>
+          </div>
+          <div class="img-preview-grid" id="preview-grid"></div>
+        </div>
+
+        <button class="btn-add" onclick="addOrder()">+ إضافة الطلب</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  let orders = JSON.parse(localStorage.getItem('temuOrders') || '[]');
+  let pendingImages = []; // base64 strings for current form
+
+  const MONTHS = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+  const now = new Date();
+  let viewYear = now.getFullYear(), viewMonth = now.getMonth();
+  let deferredPrompt = null;
+
+  // ── PWA ──
+  window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault(); deferredPrompt = e;
+    document.getElementById('install-banner').classList.add('show');
+  });
+  window.addEventListener('appinstalled', () => {
+    document.getElementById('install-banner').classList.remove('show');
+    showToast('تم تثبيت التطبيق 🎉');
+  });
+  function installApp() {
+    if (deferredPrompt) { deferredPrompt.prompt(); deferredPrompt.userChoice.then(() => deferredPrompt = null); }
+  }
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(() => {});
+
+  // ── STORAGE ──
+  function save() { localStorage.setItem('temuOrders', JSON.stringify(orders)); }
+
+  // ── TABS ──
+  function switchTab(tab) {
+    document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', ['home','monthly','add'][i] === tab));
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + tab).classList.add('active');
+    if (tab === 'monthly') renderMonthly();
+  }
+
+  // ── IMAGE HANDLING ──
+  function previewImages(e) {
+    const files = Array.from(e.target.files);
+    files.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = ev => {
+        pendingImages.push(ev.target.result);
+        renderPreviewGrid();
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function renderPreviewGrid() {
+    const grid = document.getElementById('preview-grid');
+    grid.innerHTML = pendingImages.map((src, i) => `
+      <div class="img-preview-wrap">
+        <img src="${src}" alt="صورة ${i+1}">
+        <button class="img-remove-btn" onclick="removePreviewImg(${i})">✕</button>
+      </div>`).join('');
+  }
+
+  function removePreviewImg(i) {
+    pendingImages.splice(i, 1);
+    renderPreviewGrid();
+  }
+
+  function clearForm() {
+    ['f-date','f-customer','f-amount','f-profit','f-delivery'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('f-address').value = '';
+    document.getElementById('f-images').value = '';
+    pendingImages = [];
+    document.getElementById('preview-grid').innerHTML = '';
+  }
+
+  // ── ADD ORDER ──
+  function addOrder() {
+    const date     = document.getElementById('f-date').value;
+    const customer = document.getElementById('f-customer').value.trim();
+    const address  = document.getElementById('f-address').value.trim();
+    const amount   = parseFloat(document.getElementById('f-amount').value);
+    const profit   = parseFloat(document.getElementById('f-profit').value);
+    const delivery = parseFloat(document.getElementById('f-delivery').value) || 0;
+
+    if (!date || !customer || isNaN(amount) || isNaN(profit)) {
+      showToast('⚠️ يرجى ملء الحقول المطلوبة', '#f59e0b'); return;
+    }
+
+    orders.unshift({
+      id: Date.now(),
+      customer, address, amountPaid: amount,
+      profit, delivery, date,
+      images: [...pendingImages]
+    });
+    save(); clearForm(); calcStats(); renderOrders();
+    showToast('تم إضافة الطلب ✓');
+    switchTab('home');
+  }
+
+  // ── DELETE ──
+  function deleteOrder(id) {
+    if (confirm('هل أنت متأكد من حذف هذا الطلب؟')) {
+      orders = orders.filter(o => o.id !== id);
+      save(); calcStats(); renderOrders();
+    }
+  }
+
+  // ── LIGHTBOX ──
+  function openLightbox(src) {
+    document.getElementById('lightbox-img').src = src;
+    document.getElementById('lightbox').classList.add('open');
+  }
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('open');
+  }
+
+  // ── STATS ──
+  function calcStats() {
+    const income = orders.reduce((s,o) => s+o.amountPaid+o.delivery, 0);
+    const profit = orders.reduce((s,o) => s+o.profit+o.delivery, 0);
+    document.getElementById('s-income').textContent = income.toFixed(2)+' درهم';
+    document.getElementById('s-profit').textContent = profit.toFixed(2)+' درهم';
+    document.getElementById('s-cost').textContent   = (income-profit).toFixed(2)+' درهم';
+    document.getElementById('s-count').textContent  = orders.length;
+  }
+
+  // ── RENDER ORDERS ──
+  function renderOrders() {
+    const el = document.getElementById('orders-list');
+    if (!orders.length) {
+      el.innerHTML = `<div class="empty"><span class="empty-icon">📦</span>لا توجد طلبات حتى الآن<br>اضغط "إضافة" للبدء!</div>`;
+      return;
+    }
+    el.innerHTML = orders.map(o => {
+      const imgs = (o.images && o.images.length)
+        ? `<div class="order-imgs">${o.images.map(src => `<img class="order-img" src="${src}" onclick="openLightbox('${src}')">`).join('')}</div>`
+        : '';
+      const addr = o.address
+        ? `<div class="order-address">📍 <span>${o.address}</span></div>`
+        : '';
+      return `
+      <div class="order-card">
+        <div class="order-top">
+          <div>
+            <div class="order-name">${o.customer}</div>
+            <div class="order-date">📅 ${o.date}</div>
+            ${addr}
+          </div>
+          <div class="order-profit-badge">+${(o.profit+o.delivery).toFixed(2)} درهم</div>
+        </div>
+        ${imgs}
+        <div class="order-details">
+          <div class="detail-box"><div class="detail-label">المبلغ المحصل</div><div class="detail-val b">${(o.amountPaid+o.delivery).toFixed(2)} درهم</div></div>
+          <div class="detail-box"><div class="detail-label">التكلفة التقديرية</div><div class="detail-val r">${(o.amountPaid-o.profit).toFixed(2)} درهم</div></div>
+        </div>
+        <div class="order-footer"><button class="btn-del" onclick="deleteOrder(${o.id})">🗑 حذف</button></div>
+      </div>`;
+    }).join('');
+  }
+
+  // ── MONTHLY ──
+  function changeMonth(dir) {
+    viewMonth += dir;
+    if (viewMonth < 0) { viewMonth = 11; viewYear--; }
+    if (viewMonth > 11) { viewMonth = 0; viewYear++; }
+    renderMonthly();
+  }
+
+  function renderMonthly() {
+    document.getElementById('month-label').textContent = MONTHS[viewMonth] + ' ' + viewYear;
+    const mo = orders.filter(o => { const d=new Date(o.date); return d.getFullYear()===viewYear && d.getMonth()===viewMonth; });
+    const income = mo.reduce((s,o) => s+o.amountPaid+o.delivery, 0);
+    const profit = mo.reduce((s,o) => s+o.profit+o.delivery, 0);
+    const cost   = mo.reduce((s,o) => s+(o.amountPaid-o.profit), 0);
+    const avg    = mo.length ? profit/mo.length : 0;
+    const pct    = income > 0 ? profit/income*100 : 0;
+    document.getElementById('m-profit').textContent = profit.toFixed(2)+' درهم';
+    document.getElementById('m-cost').textContent   = cost.toFixed(2)+' درهم';
+    document.getElementById('m-income').textContent = income.toFixed(2)+' درهم';
+    document.getElementById('m-count').textContent  = mo.length;
+    document.getElementById('m-avg').textContent    = avg.toFixed(2)+' درهم';
+    document.getElementById('m-pct').textContent    = pct.toFixed(1)+'%';
+    document.getElementById('m-pct2').textContent   = pct.toFixed(1)+'%';
+    document.getElementById('m-bar').style.width    = Math.min(pct,100)+'%';
+    const el = document.getElementById('month-orders-list');
+    if (!mo.length) {
+      el.innerHTML = `<div class="empty"><span class="empty-icon">📭</span>لا توجد طلبات في ${MONTHS[viewMonth]}<br><small style="font-size:12px;color:var(--muted)">جرب الانتقال لشهر آخر</small></div>`;
+      return;
+    }
+    el.innerHTML = mo.map(o => `
+      <div class="morder-row">
+        <div>
+          <div class="morder-name">${o.customer}</div>
+          <div class="morder-date">${o.date}${o.address ? ' · '+o.address.split('\n')[0] : ''}</div>
+        </div>
+        <div>
+          <div class="morder-profit">+${(o.profit+o.delivery).toFixed(2)} ربح</div>
+          <div class="morder-cost">−${(o.amountPaid-o.profit).toFixed(2)} تكلفة</div>
+        </div>
+      </div>`).join('');
+  }
+
+  // ── TOAST ──
+  function showToast(msg, bg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.style.background = bg || 'var(--green)';
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+  }
+
+  calcStats(); renderOrders();
+</script>
+</body>
+</html>
