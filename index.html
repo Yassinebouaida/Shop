@@ -30,6 +30,10 @@
     --amber-glow: rgba(245,158,11,0.4);
     --purple: #8b5cf6;
     --purple-glow: rgba(139,92,246,0.4);
+    --pink: #ec4899;
+    --pink-glow: rgba(236,72,153,0.4);
+    --cyan: #06b6d4;
+    --cyan-glow: rgba(6,182,212,0.4);
   }
   
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -42,7 +46,7 @@
     padding-bottom: 3rem;
     background-image: 
       radial-gradient(circle at 20% 50%, rgba(245,158,11,0.08) 0%, transparent 50%),
-      radial-gradient(circle at 80% 80%, rgba(59,130,246,0.05) 0%, transparent 50%);
+      radial-gradient(circle at 80% 80%, rgba(139,92,246,0.05) 0%, transparent 50%);
   }
 
   /* 3D Header */
@@ -81,6 +85,207 @@
     color: var(--muted); 
     margin-top: 4px;
     font-weight: 500;
+  }
+
+  /* AI Assistant Button */
+  .ai-btn {
+    position: fixed;
+    bottom: 90px;
+    left: 20px;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, var(--purple) 0%, #7c3aed 100%);
+    border: none;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 28px;
+    cursor: pointer;
+    box-shadow: 
+      0 8px 30px rgba(139,92,246,0.5),
+      0 0 0 4px rgba(139,92,246,0.2);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    animation: pulse 2s infinite;
+  }
+  
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 8px 30px rgba(139,92,246,0.5), 0 0 0 4px rgba(139,92,246,0.2); }
+    50% { box-shadow: 0 8px 40px rgba(139,92,246,0.7), 0 0 0 8px rgba(139,92,246,0.1); }
+  }
+  
+  .ai-btn:active {
+    transform: scale(0.95);
+  }
+
+  /* AI Chat Modal */
+  .ai-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.9);
+    z-index: 1001;
+    backdrop-filter: blur(10px);
+  }
+  
+  .ai-modal.open {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .ai-header {
+    background: linear-gradient(135deg, var(--purple) 0%, #7c3aed 100%);
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+  
+  .ai-title {
+    font-size: 18px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .ai-close {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: #fff;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .ai-close:active {
+    transform: scale(0.9);
+    background: rgba(255,255,255,0.3);
+  }
+  
+  .ai-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .ai-message {
+    max-width: 85%;
+    padding: 14px 18px;
+    border-radius: 20px;
+    font-size: 14px;
+    line-height: 1.6;
+    animation: messageSlide 0.3s ease;
+  }
+  
+  @keyframes messageSlide {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .ai-message.user {
+    background: linear-gradient(135deg, var(--blue) 0%, #2563eb 100%);
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+  }
+  
+  .ai-message.bot {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    align-self: flex-start;
+    border-bottom-left-radius: 4px;
+  }
+  
+  .ai-input-area {
+    padding: 20px;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 10px;
+  }
+  
+  .ai-input {
+    flex: 1;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 25px;
+    padding: 14px 20px;
+    color: var(--text);
+    font-family: 'Cairo', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.3s ease;
+  }
+  
+  .ai-input:focus {
+    border-color: var(--purple);
+    box-shadow: 0 0 0 3px rgba(139,92,246,0.1);
+  }
+  
+  .ai-send {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, var(--purple) 0%, #7c3aed 100%);
+    border: none;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .ai-send:active {
+    transform: scale(0.9);
+  }
+
+  /* Quick Actions */
+  .quick-actions {
+    display: flex;
+    gap: 8px;
+    padding: 0 1rem 1rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  
+  .quick-actions::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .quick-chip {
+    background: linear-gradient(145deg, var(--surface2) 0%, var(--surface3) 100%);
+    border: 1px solid var(--border);
+    border-radius: 25px;
+    padding: 10px 18px;
+    color: var(--text);
+    font-family: 'Cairo', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  }
+  
+  .quick-chip:active {
+    transform: scale(0.95);
+  }
+  
+  .quick-chip.active {
+    background: linear-gradient(135deg, var(--amber) 0%, #d97706 100%);
+    color: #000;
+    border-color: var(--amber);
   }
 
   /* 3D Tabs */
@@ -640,6 +845,24 @@
     border-top: 1px solid var(--border); 
   }
   
+  .btn-edit {
+    background: linear-gradient(135deg, var(--cyan) 0%, #0891b2 100%);
+    color: #fff;
+    border: none;
+    font-family: 'Cairo', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 8px 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(6,182,212,0.3);
+    transition: all 0.3s ease;
+  }
+  
+  .btn-edit:active {
+    transform: scale(0.95);
+  }
+  
   .btn-del { 
     background: rgba(239,68,68,0.15);
     color: var(--red); 
@@ -1136,9 +1359,187 @@
     transform: scale(0.95);
   }
 
+  /* Edit Modal */
+  .edit-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.9);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    backdrop-filter: blur(10px);
+    overflow-y: auto;
+  }
+  
+  .edit-modal-overlay.open {
+    display: flex;
+  }
+  
+  .edit-modal-content {
+    background: linear-gradient(145deg, var(--surface) 0%, var(--surface2) 100%);
+    border-radius: 24px;
+    padding: 24px;
+    max-width: 500px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    border: 1px solid var(--border);
+    box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+  }
+  
+  .edit-modal-header {
+    font-size: 20px;
+    font-weight: 800;
+    margin-bottom: 20px;
+    color: var(--cyan);
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+
   /* Hidden canvas for invoice generation */
   #invoice-canvas {
     display: none;
+  }
+  
+  /* Search Box */
+  .search-box {
+    margin: 0 1rem 1rem;
+    position: relative;
+  }
+  
+  .search-input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 45px 14px 16px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    outline: none;
+    transition: all 0.3s ease;
+  }
+  
+  .search-input:focus {
+    border-color: var(--amber);
+    box-shadow: 0 0 0 3px rgba(245,158,11,0.1);
+  }
+  
+  .search-icon {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+    opacity: 0.5;
+  }
+  
+  /* Calculator Widget */
+  .calc-widget {
+    position: fixed;
+    bottom: 160px;
+    left: 20px;
+    background: linear-gradient(145deg, var(--surface) 0%, var(--surface2) 100%);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    display: none;
+    z-index: 99;
+    width: 280px;
+  }
+  
+  .calc-widget.open {
+    display: block;
+    animation: slideUp 0.3s ease;
+  }
+  
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .calc-display {
+    background: var(--surface2);
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 10px;
+    text-align: left;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text);
+    border: 1px solid var(--border);
+    min-height: 50px;
+    word-break: break-all;
+  }
+  
+  .calc-buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+  
+  .calc-btn {
+    background: var(--surface3);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 15px;
+    color: var(--text);
+    font-family: 'Cairo', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .calc-btn:active {
+    transform: scale(0.95);
+    background: var(--surface2);
+  }
+  
+  .calc-btn.op {
+    background: var(--amber);
+    color: #000;
+  }
+  
+  .calc-btn.eq {
+    background: var(--green);
+    color: #fff;
+    grid-column: span 2;
+  }
+  
+  .calc-btn.clear {
+    background: var(--red);
+    color: #fff;
+  }
+  
+  .calc-toggle {
+    position: fixed;
+    bottom: 90px;
+    left: 90px;
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, var(--pink) 0%, #db2777 100%);
+    border: none;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(236,72,153,0.4);
+    z-index: 98;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+  }
+  
+  .calc-toggle:active {
+    transform: scale(0.9);
   }
 </style>
 <base target="_blank">
@@ -1149,6 +1550,64 @@
   <div class="header-content">
     <h1>تتبع أرباح <span>Temu</span> 📊</h1>
     <p>بياناتك محفوظة تلقائياً على جهازك</p>
+  </div>
+</div>
+
+<!-- AI Assistant Button -->
+<button class="ai-btn" onclick="toggleAI()" title="المساعد الذكي">🤖</button>
+
+<!-- Calculator Toggle -->
+<button class="calc-toggle" onclick="toggleCalc()" title="حاسبة">🧮</button>
+
+<!-- Calculator Widget -->
+<div class="calc-widget" id="calc-widget">
+  <div class="calc-display" id="calc-display">0</div>
+  <div class="calc-buttons">
+    <button class="calc-btn clear" onclick="calcClear()">C</button>
+    <button class="calc-btn" onclick="calcAppend('(')">(</button>
+    <button class="calc-btn" onclick="calcAppend(')')">)</button>
+    <button class="calc-btn op" onclick="calcAppend('/')">÷</button>
+    
+    <button class="calc-btn" onclick="calcAppend('7')">7</button>
+    <button class="calc-btn" onclick="calcAppend('8')">8</button>
+    <button class="calc-btn" onclick="calcAppend('9')">9</button>
+    <button class="calc-btn op" onclick="calcAppend('*')">×</button>
+    
+    <button class="calc-btn" onclick="calcAppend('4')">4</button>
+    <button class="calc-btn" onclick="calcAppend('5')">5</button>
+    <button class="calc-btn" onclick="calcAppend('6')">6</button>
+    <button class="calc-btn op" onclick="calcAppend('-')">−</button>
+    
+    <button class="calc-btn" onclick="calcAppend('1')">1</button>
+    <button class="calc-btn" onclick="calcAppend('2')">2</button>
+    <button class="calc-btn" onclick="calcAppend('3')">3</button>
+    <button class="calc-btn op" onclick="calcAppend('+')">+</button>
+    
+    <button class="calc-btn" onclick="calcAppend('0')">0</button>
+    <button class="calc-btn" onclick="calcAppend('.')">.</button>
+    <button class="calc-btn eq" onclick="calcEqual()">=</button>
+  </div>
+</div>
+
+<!-- AI Modal -->
+<div class="ai-modal" id="ai-modal">
+  <div class="ai-header">
+    <div class="ai-title">🤖 المساعد الذكي</div>
+    <button class="ai-close" onclick="toggleAI()">✕</button>
+  </div>
+  <div class="ai-body" id="ai-messages">
+    <div class="ai-message bot">
+      مرحباً! أنا مساعدك الذكي في تتبع أرباح Temu. يمكنني مساعدتك في:<br><br>
+      • حساب الأرباح المتوقعة<br>
+      • تحليل أدائك الشهري<br>
+      • نصائح لزيادة المبيعات<br>
+      • حلول لتحسين هامش الربح<br>
+      • الإجابة على استفساراتك
+    </div>
+  </div>
+  <div class="ai-input-area">
+    <input type="text" class="ai-input" id="ai-input" placeholder="اكتب سؤالك هنا..." onkeypress="if(event.key==='Enter')sendAIMessage()">
+    <button class="ai-send" onclick="sendAIMessage()">➤</button>
   </div>
 </div>
 
@@ -1184,6 +1643,21 @@
         <div class="stat-val w" id="s-count">0</div>
       </div>
     </div>
+  </div>
+  
+  <!-- Quick Actions -->
+  <div class="quick-actions">
+    <button class="quick-chip active" onclick="filterOrders('all', this)">الكل</button>
+    <button class="quick-chip" onclick="filterOrders('today', this)">📅 اليوم</button>
+    <button class="quick-chip" onclick="filterOrders('week', this)">📊 هذا الأسبوع</button>
+    <button class="quick-chip" onclick="filterOrders('high', this)">💰 أعلى ربح</button>
+    <button class="quick-chip" onclick="showStatsAI()">📈 تحليل ذكي</button>
+  </div>
+  
+  <!-- Search -->
+  <div class="search-box">
+    <span class="search-icon">🔍</span>
+    <input type="text" class="search-input" id="search-input" placeholder="ابحث باسم الزبون، العنوان، أو التاريخ..." oninput="searchOrders()">
   </div>
   
   <!-- Action Buttons -->
@@ -1254,8 +1728,10 @@
 <div class="page" id="page-add">
   <div style="padding:1rem;">
     <div class="form-section" style="margin:0 0 1rem;">
-      <div class="form-header">✨ إضافة طلب جديد</div>
+      <div class="form-header" id="form-header">✨ إضافة طلب جديد</div>
       <div class="form-body">
+
+        <input type="hidden" id="f-edit-id" value="">
 
         <div>
           <div class="field-label">📅 التاريخ</div>
@@ -1279,18 +1755,24 @@
 
         <div class="row2">
           <div>
-            <div class="field-label">💵 السعر النهائي</div>
-            <input type="number" id="f-amount" placeholder="درهم" min="0" step="0.01" />
+            <div class="field-label">💵 سعر البيع (للزبون)</div>
+            <input type="number" id="f-amount" placeholder="درهم" min="0" step="0.01" oninput="calcProfit()" />
           </div>
           <div>
-            <div class="field-label">💰 صافي الربح</div>
-            <input type="number" id="f-profit" placeholder="درهم" min="0" step="0.01" />
+            <div class="field-label">💰 سعر التكلفة (من Temu)</div>
+            <input type="number" id="f-cost" placeholder="درهم" min="0" step="0.01" oninput="calcProfit()" />
           </div>
         </div>
 
-        <div>
-          <div class="field-label">🚚 سعر التوصيل (اختياري)</div>
-          <input type="number" id="f-delivery" placeholder="درهم" min="0" step="0.01" />
+        <div class="row2">
+          <div>
+            <div class="field-label">📊 الربح المتوقع</div>
+            <input type="number" id="f-profit" placeholder="يحسب تلقائياً" min="0" step="0.01" readonly style="background: var(--surface3); color: var(--green);" />
+          </div>
+          <div>
+            <div class="field-label">🚚 رسوم التوصيل</div>
+            <input type="number" id="f-delivery" placeholder="درهم" min="0" step="0.01" value="15" />
+          </div>
         </div>
 
         <div>
@@ -1303,7 +1785,8 @@
           <div class="img-preview-grid" id="preview-grid"></div>
         </div>
 
-        <button class="btn-add" onclick="addOrder()">+ إضافة الطلب</button>
+        <button class="btn-add" id="btn-submit" onclick="addOrder()">+ إضافة الطلب</button>
+        <button class="btn-add" id="btn-cancel" onclick="cancelEdit()" style="display:none; background: var(--red); margin-top: 10px;">✕ إلغاء التعديل</button>
       </div>
     </div>
   </div>
@@ -1327,6 +1810,14 @@
   </div>
 </div>
 
+<!-- EDIT MODAL -->
+<div class="edit-modal-overlay" id="edit-modal" onclick="closeEditModal(event)">
+  <div class="edit-modal-content" onclick="event.stopPropagation()">
+    <div class="edit-modal-header">✏️ تعديل الطلب</div>
+    <div id="edit-form-container"></div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 <canvas id="invoice-canvas"></canvas>
 
@@ -1334,6 +1825,8 @@
   let orders = JSON.parse(localStorage.getItem('temuOrders') || '[]');
   let pendingImages = [];
   let selectedOrderForInvoice = null;
+  let currentFilter = 'all';
+  let editingId = null;
 
   const MONTHS = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
   const now = new Date();
@@ -1343,6 +1836,8 @@
   // Shop Info
   const SHOP_NAME = "Temu Maroc";
   const SHOP_PHONE = "0701248514";
+  const DELIVERY_FEE = 15;
+  const BANK_FEE = 10;
 
   // ── PWA ──
   window.addEventListener('beforeinstallprompt', e => {
@@ -1380,6 +1875,15 @@
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById('page-' + tab).classList.add('active');
     if (tab === 'monthly') renderMonthly();
+    if (tab === 'add' && editingId) cancelEdit();
+  }
+
+  // ── PROFIT CALCULATOR ──
+  function calcProfit() {
+    const amount = parseFloat(document.getElementById('f-amount').value) || 0;
+    const cost = parseFloat(document.getElementById('f-cost').value) || 0;
+    const profit = amount - cost;
+    document.getElementById('f-profit').value = profit > 0 ? profit.toFixed(2) : 0;
   }
 
   // ── IMPORT/EXPORT ──
@@ -1446,9 +1950,9 @@
       <div class="order-select-item" onclick="selectOrderForInvoice(${index}, this)" data-index="${index}">
         <div>
           <div style="font-weight:700">${o.customer}</div>
-          <div style="font-size:11px;color:var(--muted);margin-top:2px">${o.date} · ${(o.amountPaid + o.delivery).toFixed(2)} درهم</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px">${o.date}</div>
         </div>
-        <div style="color:var(--green);font-weight:700">+${(o.profit + o.delivery).toFixed(2)} ربح</div>
+        <div style="color:var(--blue);font-weight:700">${(o.amountPaid + o.delivery).toFixed(2)} درهم</div>
       </div>
     `).join('');
     
@@ -1478,124 +1982,159 @@
     const canvas = document.getElementById('invoice-canvas');
     const ctx = canvas.getContext('2d');
     
-    // Set canvas size (A4 ratio but smaller for mobile)
+    // Set canvas size
     canvas.width = 800;
-    canvas.height = 1000;
+    canvas.height = 1100;
     
     // Background
-    const gradient = ctx.createLinearGradient(0, 0, 800, 1000);
-    gradient.addColorStop(0, '#1a1a2e');
-    gradient.addColorStop(1, '#16213e');
+    const gradient = ctx.createLinearGradient(0, 0, 800, 1100);
+    gradient.addColorStop(0, '#fafafa');
+    gradient.addColorStop(1, '#f0f0f5');
     ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, 800, 1000);
+    ctx.fillRect(0, 0, 800, 1100);
     
-    // Decorative elements
-    ctx.fillStyle = 'rgba(245, 158, 11, 0.1)';
-    ctx.beginPath();
-    ctx.arc(700, 100, 150, 0, Math.PI * 2);
-    ctx.fill();
-    
-    ctx.fillStyle = 'rgba(139, 92, 246, 0.1)';
-    ctx.beginPath();
-    ctx.arc(100, 900, 100, 0, Math.PI * 2);
-    ctx.fill();
-    
-    // Header
+    // Header Border
     ctx.fillStyle = '#f59e0b';
-    ctx.font = 'bold 48px Cairo, Arial';
+    ctx.fillRect(0, 0, 800, 8);
+    
+    // Shop Name
+    ctx.fillStyle = '#1f2937';
+    ctx.font = 'bold 52px Cairo, Arial';
     ctx.textAlign = 'center';
     ctx.fillText(SHOP_NAME, 400, 80);
     
-    ctx.fillStyle = '#888';
-    ctx.font = '24px Cairo, Arial';
-    ctx.fillText('فاتورة شراء', 400, 120);
+    ctx.fillStyle = '#6b7280';
+    ctx.font = '28px Cairo, Arial';
+    ctx.fillText('فاتورة شراء رسمية', 400, 120);
     
-    // Shop phone
-    ctx.fillStyle = '#10b981';
-    ctx.font = 'bold 28px Cairo, Arial';
-    ctx.fillText(`📞 ${SHOP_PHONE}`, 400, 160);
+    // Shop Info Box
+    ctx.fillStyle = '#f3f4f6';
+    ctx.fillRect(50, 150, 700, 80);
+    ctx.strokeStyle = '#e5e7eb';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(50, 150, 700, 80);
+    
+    ctx.fillStyle = '#374151';
+    ctx.font = 'bold 24px Cairo, Arial';
+    ctx.textAlign = 'right';
+    ctx.fillText(`الهاتف: ${SHOP_NAME} ${SHOP_PHONE} 📞`, 730, 195);
     
     // Line
-    ctx.strokeStyle = 'rgba(245, 158, 11, 0.5)';
+    ctx.strokeStyle = '#f59e0b';
     ctx.lineWidth = 3;
     ctx.beginPath();
-    ctx.moveTo(50, 190);
-    ctx.lineTo(750, 190);
+    ctx.moveTo(50, 260);
+    ctx.lineTo(750, 260);
     ctx.stroke();
     
     // Customer Info
-    ctx.textAlign = 'right';
-    ctx.fillStyle = '#fff';
+    ctx.fillStyle = '#1f2937';
     ctx.font = 'bold 32px Cairo, Arial';
-    ctx.fillText('معلومات الزبون:', 750, 240);
+    ctx.fillText('معلومات الزبون', 730, 310);
     
-    ctx.font = '28px Cairo, Arial';
-    ctx.fillStyle = '#ccc';
-    ctx.fillText(`الاسم: ${order.customer}`, 750, 290);
+    ctx.fillStyle = '#4b5563';
+    ctx.font = '26px Cairo, Arial';
+    let y = 360;
+    ctx.fillText(`الاسم: ${order.customer}`, 730, y);
+    y += 45;
     
     if (order.phone) {
-      ctx.fillText(`الهاتف: ${order.phone}`, 750, 330);
+      ctx.fillText(`الهاتف: ${order.phone}`, 730, y);
+      y += 45;
     }
     
     if (order.address) {
-      const addressLines = order.address.match(/.{1,30}/g) || [order.address];
-      let y = order.phone ? 370 : 330;
-      ctx.fillText('العنوان:', 750, y);
+      const addressLines = order.address.match(/.{1,35}/g) || [order.address];
+      ctx.fillText('العنوان:', 730, y);
       y += 40;
       addressLines.forEach(line => {
-        ctx.fillText(line, 750, y);
+        ctx.fillText(line, 730, y);
         y += 40;
       });
     }
     
-    // Line
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(50, 480);
-    ctx.lineTo(750, 480);
-    ctx.stroke();
-    
-    // Order Details
-    ctx.fillStyle = '#f59e0b';
+    // Order Details Header
+    ctx.fillStyle = '#1f2937';
     ctx.font = 'bold 32px Cairo, Arial';
-    ctx.fillText('تفاصيل الطلب:', 750, 530);
+    ctx.fillText('تفاصيل الفاتورة', 730, y + 20);
     
-    const cost = order.amountPaid - order.profit;
-    const total = order.amountPaid + order.delivery;
+    // Invoice Table
+    const tableY = y + 60;
     
-    ctx.fillStyle = '#fff';
-    ctx.font = '28px Cairo, Arial';
+    // Table Header
+    ctx.fillStyle = '#f3f4f6';
+    ctx.fillRect(50, tableY, 700, 60);
+    ctx.strokeStyle = '#d1d5db';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(50, tableY, 700, 60);
     
-    let yPos = 580;
-    ctx.fillText(`التاريخ: ${order.date}`, 750, yPos);
-    yPos += 50;
-    ctx.fillText(`تكلفة المنتجات: ${cost.toFixed(2)} درهم`, 750, yPos);
-    yPos += 50;
-    ctx.fillText(`الربح: ${order.profit.toFixed(2)} درهم`, 750, yPos);
-    yPos += 50;
-    
-    if (order.delivery > 0) {
-      ctx.fillText(`التوصيل: ${order.delivery.toFixed(2)} درهم`, 750, yPos);
-      yPos += 50;
-    }
-    
-    // Total Box
-    ctx.fillStyle = 'rgba(16, 185, 129, 0.2)';
-    ctx.fillRect(200, yPos + 20, 400, 80);
-    ctx.strokeStyle = '#10b981';
-    ctx.lineWidth = 3;
-    ctx.strokeRect(200, yPos + 20, 400, 80);
-    
-    ctx.fillStyle = '#10b981';
-    ctx.font = 'bold 36px Cairo, Arial';
+    ctx.fillStyle = '#374151';
+    ctx.font = 'bold 24px Cairo, Arial';
     ctx.textAlign = 'center';
-    ctx.fillText(`المجموع: ${total.toFixed(2)} درهم`, 400, yPos + 75);
+    ctx.fillText('البيان', 400, tableY + 40);
+    ctx.fillText('المبلغ (درهم)', 650, tableY + 40);
+    
+    // Table Rows
+    let rowY = tableY + 60;
+    const rowHeight = 55;
+    
+    // Product Cost (hidden actual cost, show selling price)
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(50, rowY, 700, rowHeight);
+    ctx.strokeRect(50, rowY, 700, rowHeight);
+    ctx.fillStyle = '#1f2937';
+    ctx.font = '24px Cairo, Arial';
+    ctx.textAlign = 'right';
+    ctx.fillText('سعر المنتج', 380, rowY + 37);
+    ctx.textAlign = 'center';
+    ctx.fillText(order.amountPaid.toFixed(2), 650, rowY + 37);
+    rowY += rowHeight;
+    
+    // Delivery Fee
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(50, rowY, 700, rowHeight);
+    ctx.strokeRect(50, rowY, 700, rowHeight);
+    ctx.fillStyle = '#1f2937';
+    ctx.textAlign = 'right';
+    ctx.fillText('رسوم التوصيل', 380, rowY + 37);
+    ctx.textAlign = 'center';
+    ctx.fillText(DELIVERY_FEE.toFixed(2), 650, rowY + 37);
+    rowY += rowHeight;
+    
+    // Bank Fee
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(50, rowY, 700, rowHeight);
+    ctx.strokeRect(50, rowY, 700, rowHeight);
+    ctx.fillStyle = '#1f2937';
+    ctx.textAlign = 'right';
+    ctx.fillText('رسوم اقتطاع البنك', 380, rowY + 37);
+    ctx.textAlign = 'center';
+    ctx.fillText(BANK_FEE.toFixed(2), 650, rowY + 37);
+    rowY += rowHeight;
+    
+    // Total Row
+    const total = order.amountPaid + DELIVERY_FEE + BANK_FEE;
+    
+    ctx.fillStyle = '#f59e0b';
+    ctx.fillRect(50, rowY, 700, 70);
+    ctx.strokeRect(50, rowY, 700, 70);
+    
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 32px Cairo, Arial';
+    ctx.textAlign = 'right';
+    ctx.fillText('الإجمالي الكلي', 380, rowY + 47);
+    ctx.textAlign = 'center';
+    ctx.fillText(total.toFixed(2), 650, rowY + 47);
     
     // Footer
-    ctx.fillStyle = '#666';
+    ctx.fillStyle = '#9ca3af';
     ctx.font = '22px Cairo, Arial';
-    ctx.fillText('شكراً لتسوقكم معنا!', 400, 950);
+    ctx.textAlign = 'center';
+    ctx.fillText('شكراً لتسوقكم معنا! نتمنى لكم يوماً سعيداً 😊', 400, 1020);
+    
+    ctx.fillStyle = '#d1d5db';
+    ctx.font = '18px Cairo, Arial';
+    ctx.fillText(`رقم الطلب: #${order.id} | التاريخ: ${order.date}`, 400, 1050);
     
     // Download
     const link = document.createElement('a');
@@ -1635,48 +2174,103 @@
   }
 
   function clearForm() {
-    ['f-date','f-customer','f-phone','f-amount','f-profit','f-delivery'].forEach(id => {
+    ['f-date','f-customer','f-phone','f-amount','f-cost','f-profit','f-delivery','f-edit-id'].forEach(id => {
       document.getElementById(id).value = '';
     });
     document.getElementById('f-address').value = '';
     document.getElementById('f-images').value = '';
+    document.getElementById('f-delivery').value = DELIVERY_FEE;
     pendingImages = [];
     document.getElementById('preview-grid').innerHTML = '';
+    editingId = null;
+    
+    document.getElementById('form-header').textContent = '✨ إضافة طلب جديد';
+    document.getElementById('btn-submit').textContent = '+ إضافة الطلب';
+    document.getElementById('btn-cancel').style.display = 'none';
   }
 
-  // ── ADD ORDER ──
+  // ── ADD/EDIT ORDER ──
   function addOrder() {
     const date     = document.getElementById('f-date').value;
     const customer = document.getElementById('f-customer').value.trim();
     const phone    = document.getElementById('f-phone').value.trim();
     const address  = document.getElementById('f-address').value.trim();
     const amount   = parseFloat(document.getElementById('f-amount').value);
-    const profit   = parseFloat(document.getElementById('f-profit').value);
-    const delivery = parseFloat(document.getElementById('f-delivery').value) || 0;
+    const cost     = parseFloat(document.getElementById('f-cost').value) || amount;
+    const delivery = parseFloat(document.getElementById('f-delivery').value) || DELIVERY_FEE;
+    const editId   = document.getElementById('f-edit-id').value;
 
-    if (!date || !customer || isNaN(amount) || isNaN(profit)) {
+    if (!date || !customer || isNaN(amount)) {
       showToast('⚠️ يرجى ملء الحقول المطلوبة', '#f59e0b'); 
       return;
     }
 
-    orders.unshift({
-      id: Date.now(),
-      customer, 
-      phone,
-      address, 
-      amountPaid: amount,
-      profit, 
-      delivery, 
-      date,
-      images: [...pendingImages]
-    });
+    const profit = amount - cost;
+
+    if (editId) {
+      // Edit existing
+      const index = orders.findIndex(o => o.id == editId);
+      if (index !== -1) {
+        orders[index] = {
+          ...orders[index],
+          customer, phone, address,
+          amountPaid: amount,
+          cost: cost,
+          profit: profit,
+          delivery, date,
+          images: pendingImages.length > 0 ? pendingImages : orders[index].images
+        };
+        showToast('تم تعديل الطلب بنجاح ✏️');
+      }
+    } else {
+      // Add new
+      orders.unshift({
+        id: Date.now(),
+        customer, phone, address,
+        amountPaid: amount,
+        cost: cost,
+        profit: profit,
+        delivery, date,
+        images: [...pendingImages]
+      });
+      showToast('تم إضافة الطلب ✓');
+    }
     
     save(); 
     clearForm(); 
     calcStats(); 
     renderOrders();
-    showToast('تم إضافة الطلب ✓');
     switchTab('home');
+  }
+
+  function editOrder(id) {
+    const order = orders.find(o => o.id === id);
+    if (!order) return;
+
+    editingId = id;
+    document.getElementById('f-edit-id').value = id;
+    document.getElementById('f-date').value = order.date;
+    document.getElementById('f-customer').value = order.customer;
+    document.getElementById('f-phone').value = order.phone || '';
+    document.getElementById('f-address').value = order.address || '';
+    document.getElementById('f-amount').value = order.amountPaid;
+    document.getElementById('f-cost').value = order.cost || (order.amountPaid - order.profit);
+    document.getElementById('f-profit').value = order.profit.toFixed(2);
+    document.getElementById('f-delivery').value = order.delivery || DELIVERY_FEE;
+    
+    pendingImages = order.images || [];
+    renderPreviewGrid();
+    
+    document.getElementById('form-header').textContent = '✏️ تعديل الطلب';
+    document.getElementById('btn-submit').textContent = '💾 حفظ التعديلات';
+    document.getElementById('btn-cancel').style.display = 'block';
+    
+    switchTab('add');
+  }
+
+  function cancelEdit() {
+    clearForm();
+    showToast('تم إلغاء التعديل');
   }
 
   // ── DELETE ──
@@ -1686,6 +2280,7 @@
       save(); 
       calcStats(); 
       renderOrders();
+      showToast('تم حذف الطلب 🗑️');
     }
   }
 
@@ -1709,14 +2304,55 @@
     document.getElementById('s-count').textContent  = orders.length;
   }
 
+  // ── FILTER & SEARCH ──
+  function filterOrders(type, btn) {
+    currentFilter = type;
+    document.querySelectorAll('.quick-chip').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    renderOrders();
+  }
+
+  function searchOrders() {
+    renderOrders();
+  }
+
+  function getFilteredOrders() {
+    let filtered = [...orders];
+    
+    const searchTerm = document.getElementById('search-input').value.toLowerCase();
+    if (searchTerm) {
+      filtered = filtered.filter(o => 
+        o.customer.toLowerCase().includes(searchTerm) ||
+        (o.address && o.address.toLowerCase().includes(searchTerm)) ||
+        o.date.includes(searchTerm)
+      );
+    }
+    
+    if (currentFilter === 'today') {
+      const today = new Date().toISOString().split('T')[0];
+      filtered = filtered.filter(o => o.date === today);
+    } else if (currentFilter === 'week') {
+      const weekAgo = new Date();
+      weekAgo.setDate(weekAgo.getDate() - 7);
+      filtered = filtered.filter(o => new Date(o.date) >= weekAgo);
+    } else if (currentFilter === 'high') {
+      filtered = filtered.sort((a,b) => (b.profit+b.delivery) - (a.profit+a.delivery));
+    }
+    
+    return filtered;
+  }
+
   // ── RENDER ORDERS ──
   function renderOrders() {
     const el = document.getElementById('orders-list');
-    if (!orders.length) {
+    const displayOrders = getFilteredOrders();
+    
+    if (!displayOrders.length) {
       el.innerHTML = `<div class="empty"><span class="empty-icon">📦</span>لا توجد طلبات حتى الآن<br>اضغط "إضافة" للبدء!</div>`;
       return;
     }
-    el.innerHTML = orders.map(o => {
+    
+    el.innerHTML = displayOrders.map(o => {
       const imgs = (o.images && o.images.length)
         ? `<div class="order-imgs">${o.images.map(src => `<img class="order-img" src="${src}" onclick="openLightbox('${src}')">`).join('')}</div>`
         : '';
@@ -1739,12 +2375,13 @@
         </div>
         ${imgs}
         <div class="order-details">
-          <div class="detail-box"><div class="detail-label">المبلغ المحصل</div><div class="detail-val b">${(o.amountPaid+o.delivery).toFixed(2)} درهم</div></div>
-          <div class="detail-box"><div class="detail-label">التكلفة التقديرية</div><div class="detail-val r">${(o.amountPaid-o.profit).toFixed(2)} درهم</div></div>
+          <div class="detail-box"><div class="detail-label">مبيعات</div><div class="detail-val b">${(o.amountPaid+o.delivery).toFixed(2)} درهم</div></div>
+          <div class="detail-box"><div class="detail-label">تكلفة</div><div class="detail-val r">${(o.amountPaid-o.profit).toFixed(2)} درهم</div></div>
         </div>
         <div class="order-footer">
           <button class="btn-invoice-small" onclick="quickInvoice(${o.id})">🧾 فاتورة</button>
-          <button class="btn-del" onclick="deleteOrder(${o.id})">🗑 حذف</button>
+          <button class="btn-edit" onclick="editOrder(${o.id})">✏️ تعديل</button>
+          <button class="btn-del" onclick="deleteOrder(${o.id})">🗑️ حذف</button>
         </div>
       </div>`;
     }).join('');
@@ -1755,7 +2392,6 @@
     const order = orders.find(o => o.id === id);
     if (!order) return;
     
-    // Find index
     selectedOrderForInvoice = orders.findIndex(o => o.id === id);
     generateInvoice();
   }
@@ -1807,6 +2443,140 @@
       </div>`).join('');
   }
 
+  // ── AI ASSISTANT ──
+  function toggleAI() {
+    document.getElementById('ai-modal').classList.toggle('open');
+  }
+
+  function sendAIMessage() {
+    const input = document.getElementById('ai-input');
+    const message = input.value.trim();
+    if (!message) return;
+    
+    // Add user message
+    addAIMessage(message, 'user');
+    input.value = '';
+    
+    // Generate response
+    setTimeout(() => {
+      const response = generateAIResponse(message);
+      addAIMessage(response, 'bot');
+    }, 500);
+  }
+
+  function addAIMessage(text, type) {
+    const container = document.getElementById('ai-messages');
+    const div = document.createElement('div');
+    div.className = `ai-message ${type}`;
+    div.innerHTML = text;
+    container.appendChild(div);
+    container.scrollTop = container.scrollHeight;
+  }
+
+  function generateAIResponse(message) {
+    const lower = message.toLowerCase();
+    
+    if (lower.includes('ربح') || lower.includes('فلوس') || lower.includes('فلوس')) {
+      const totalProfit = orders.reduce((s,o) => s+o.profit+o.delivery, 0);
+      return `أرباحك الكلية حتى الآن: <strong>${totalProfit.toFixed(2)} درهم</strong> 💰<br><br>أنصحك بزيادة المنتجات ذات هامش الربح العالي!`;
+    }
+    
+    if (lower.includes('طلب') || lower.includes('order')) {
+      return `لديك <strong>${orders.length}</strong> طلب في السجل.<br>أكثر شهر ربحاً: ${getBestMonth()}`;
+    }
+    
+    if (lower.includes('نصيحة') || lower.includes('نصائح') || lower.includes('help')) {
+      return `💡 نصائح لزيادة أرباحك:<br><br>
+      1. ركز على المنتجات التي يزيد ربحها عن 30 درهم<br>
+      2. قدم خصومات للطلبات المتعددة<br>
+      3. استهدف المناسبات والأعياد<br>
+      4. حسّن صور المنتجات لجذب المزيد من الزبائن`;
+    }
+    
+    if (lower.includes('حاسبة') || lower.includes('احسب')) {
+      return `🧮 استخدم الحاسبة العائمة! اضغط على زر الوردي 🧮 في الأسفل لحساب الأرباح بسرعة.`;
+    }
+    
+    if (lower.includes('فاتورة') || lower.includes('invoice')) {
+      return `🧾 لإنشاء فاتورة للزبون:<br>1. اذهب إلى "الرئيسية"<br>2. اضغط على زر "فاتورة PNG"<br>3. اختر الطلب<br><br>الفاتورة تحتوي على سعر البيع + 15 درهم توصيل + 10 درهم بنك`;
+    }
+    
+    if (lower.includes('تصدير') || lower.includes('export')) {
+      return `📤 للتصدير: اضغط زر "تصدير" في الصفحة الرئيسية.<br>سيتم حفظ جميع طلباتك في ملف JSON يمكن استيراده لاحقاً.`;
+    }
+    
+    if (lower.includes('تعديل') || lower.includes('edit')) {
+      return `✏️ لتعديل طلب:<br>1. اذهب إلى "الرئيسية"<br>2. اضغط على زر "تعديل" في بطاقة الطلب<br>3. عدل البيانات واحفظ`;
+    }
+    
+    return `🤔 لم أفهم سؤالك تماماً.<br><br>يمكنني مساعدتك في:<br>• معرفة أرباحك<br>• عدد الطلبات<br>• نصائح للبيع<br>• كيفية استخدام التطبيق<br><br>جرب أن تسأل: "كم ربحي؟" أو "أعطني نصيحة"`;
+  }
+
+  function getBestMonth() {
+    if (orders.length === 0) return 'لا يوجد بيانات';
+    
+    const monthProfits = {};
+    orders.forEach(o => {
+      const d = new Date(o.date);
+      const key = `${d.getFullYear()}-${d.getMonth()}`;
+      monthProfits[key] = (monthProfits[key] || 0) + o.profit + o.delivery;
+    });
+    
+    const best = Object.entries(monthProfits).sort((a,b) => b[1]-a[1])[0];
+    if (!best) return 'لا يوجد بيانات';
+    
+    const [year, month] = best[0].split('-');
+    return `${MONTHS[parseInt(month)]} ${year} (${best[1].toFixed(0)} درهم)`;
+  }
+
+  function showStatsAI() {
+    const totalOrders = orders.length;
+    const totalProfit = orders.reduce((s,o) => s+o.profit+o.delivery, 0);
+    const avgProfit = totalOrders ? totalProfit / totalOrders : 0;
+    const bestMonth = getBestMonth();
+    
+    toggleAI();
+    setTimeout(() => {
+      addAIMessage(
+        `📊 <strong>تحليل أدائك:</strong><br><br>
+        • إجمالي الطلبات: ${totalOrders}<br>
+        • إجمالي الأرباح: ${totalProfit.toFixed(2)} درهم<br>
+        • متوسط الربح/طلب: ${avgProfit.toFixed(2)} درهم<br>
+        • أفضل شهر: ${bestMonth}<br><br>
+        ${avgProfit > 50 ? '🌟 أداء ممتاز! استمر بنفس النمط.' : '💡 يمكنك تحسين الأرباح بزيادة منتجات الهامش العالي.'}`,
+        'bot'
+      );
+    }, 300);
+  }
+
+  // ── CALCULATOR ──
+  let calcExpression = '';
+  
+  function toggleCalc() {
+    document.getElementById('calc-widget').classList.toggle('open');
+  }
+  
+  function calcAppend(char) {
+    calcExpression += char;
+    document.getElementById('calc-display').textContent = calcExpression || '0';
+  }
+  
+  function calcClear() {
+    calcExpression = '';
+    document.getElementById('calc-display').textContent = '0';
+  }
+  
+  function calcEqual() {
+    try {
+      const result = eval(calcExpression);
+      document.getElementById('calc-display').textContent = result;
+      calcExpression = String(result);
+    } catch {
+      document.getElementById('calc-display').textContent = 'خطأ';
+      calcExpression = '';
+    }
+  }
+
   // ── TOAST ──
   function showToast(msg, bg) {
     const t = document.getElementById('toast');
@@ -1817,6 +2587,7 @@
   }
 
   // Initialize
+  document.getElementById('f-delivery').value = DELIVERY_FEE;
   calcStats(); 
   renderOrders();
 </script>
