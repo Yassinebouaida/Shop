@@ -1359,48 +1359,6 @@
     transform: scale(0.95);
   }
 
-  /* Edit Modal */
-  .edit-modal-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.9);
-    z-index: 1000;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    backdrop-filter: blur(10px);
-    overflow-y: auto;
-  }
-  
-  .edit-modal-overlay.open {
-    display: flex;
-  }
-  
-  .edit-modal-content {
-    background: linear-gradient(145deg, var(--surface) 0%, var(--surface2) 100%);
-    border-radius: 24px;
-    padding: 24px;
-    max-width: 500px;
-    width: 100%;
-    max-height: 90vh;
-    overflow-y: auto;
-    border: 1px solid var(--border);
-    box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-  }
-  
-  .edit-modal-header {
-    font-size: 20px;
-    font-weight: 800;
-    margin-bottom: 20px;
-    color: var(--cyan);
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-  }
-
   /* Hidden canvas for invoice generation */
   #invoice-canvas {
     display: none;
@@ -1542,19 +1500,18 @@
     transform: scale(0.9);
   }
 </style>
-<base target="_blank">
 </head>
 <body>
 
 <div class="header">
   <div class="header-content">
-    <h1>تتبع أرباح <span>Temu</span> 📊</h1>
+    <h1>📊 تتبع أرباح <span>Temu</span></h1>
     <p>بياناتك محفوظة تلقائياً على جهازك</p>
   </div>
 </div>
 
 <!-- AI Assistant Button -->
-<button class="ai-btn" onclick="toggleAI()" title="المساعد الذكي">🤖</button>
+<button class="ai-btn" onclick="toggleAI()" title="المساعد الذكي - وسيط Temu">🤖</button>
 
 <!-- Calculator Toggle -->
 <button class="calc-toggle" onclick="toggleCalc()" title="حاسبة">🧮</button>
@@ -1592,21 +1549,22 @@
 <!-- AI Modal -->
 <div class="ai-modal" id="ai-modal">
   <div class="ai-header">
-    <div class="ai-title">🤖 المساعد الذكي</div>
+    <div class="ai-title">🤖 مساعد الوسيط</div>
     <button class="ai-close" onclick="toggleAI()">✕</button>
   </div>
   <div class="ai-body" id="ai-messages">
     <div class="ai-message bot">
-      مرحباً! أنا مساعدك الذكي في تتبع أرباح Temu. يمكنني مساعدتك في:<br><br>
-      • حساب الأرباح المتوقعة<br>
-      • تحليل أدائك الشهري<br>
-      • نصائح لزيادة المبيعات<br>
-      • حلول لتحسين هامش الربح<br>
-      • الإجابة على استفساراتك
+      السلام عليكم خويا! أنا مساعدك في التجارة مع Temu. كيفاش نقدر نعاونك اليوم؟<br><br>
+      💡 نصايحي:<br>
+      • دير عينك على المنتجات لي تربح فيهم +30 درهم<br>
+      • صور المنتج بجودة عالية تجذب الزبائن<br>
+      • دير ثقة مع الزبائن وكون صريح معاهم<br>
+      • استغل الأعياد والمناسبات تزيد مبيعاتك<br><br>
+      شنو تحب تعرف؟
     </div>
   </div>
   <div class="ai-input-area">
-    <input type="text" class="ai-input" id="ai-input" placeholder="اكتب سؤالك هنا..." onkeypress="if(event.key==='Enter')sendAIMessage()">
+    <input type="text" class="ai-input" id="ai-input" placeholder="اكتب سؤالك خويا..." onkeypress="if(event.key==='Enter')sendAIMessage()">
     <button class="ai-send" onclick="sendAIMessage()">➤</button>
   </div>
 </div>
@@ -1626,7 +1584,7 @@
 <div class="page active" id="page-home">
   <div class="stats">
     <div class="stat">
-      <div class="stat-label">إجمالي الدخل</div>
+      <div class="stat-label">إجمالي المبيعات</div>
       <div class="stat-val b" id="s-income">0.00 درهم</div>
     </div>
     <div class="stat">
@@ -1651,7 +1609,7 @@
     <button class="quick-chip" onclick="filterOrders('today', this)">📅 اليوم</button>
     <button class="quick-chip" onclick="filterOrders('week', this)">📊 هذا الأسبوع</button>
     <button class="quick-chip" onclick="filterOrders('high', this)">💰 أعلى ربح</button>
-    <button class="quick-chip" onclick="showStatsAI()">📈 تحليل ذكي</button>
+    <button class="quick-chip" onclick="showStatsAI()">📈 تحليل</button>
   </div>
   
   <!-- Search -->
@@ -1669,7 +1627,7 @@
       📤 تصدير
     </button>
     <button class="action-btn invoice" onclick="openInvoiceModal()">
-      🧾 فاتورة PNG
+      🧾 فاتورة
     </button>
   </div>
   
@@ -1697,7 +1655,7 @@
         <div class="mcard-val r" id="m-cost">0.00 درهم</div>
       </div>
       <div class="mcard bl">
-        <div class="mcard-label">📥 إجمالي الدخل</div>
+        <div class="mcard-label">📥 إجمالي المبيعات</div>
         <div class="mcard-val b" id="m-income">0.00 درهم</div>
       </div>
       <div class="mcard am">
@@ -1716,7 +1674,7 @@
       </div>
     </div>
     <div class="bar-wrap">
-      <div class="bar-labels"><span>نسبة الربح من الدخل</span><span id="m-pct2">0%</span></div>
+      <div class="bar-labels"><span>نسبة الربح من المبيعات</span><span id="m-pct2">0%</span></div>
       <div class="bar-track"><div class="bar-fill" id="m-bar" style="width:0%"></div></div>
     </div>
     <div class="month-orders-title">تفاصيل طلبات الشهر</div>
@@ -1786,7 +1744,7 @@
         </div>
 
         <button class="btn-add" id="btn-submit" onclick="addOrder()">+ إضافة الطلب</button>
-        <button class="btn-add" id="btn-cancel" onclick="cancelEdit()" style="display:none; background: var(--red); margin-top: 10px;">✕ إلغاء التعديل</button>
+        <button class="btn-add" id="btn-cancel-edit" onclick="cancelEdit()" style="display:none; background: linear-gradient(135deg, var(--red) 0%, #dc2626 100%); margin-top: 10px;">✕ إلغاء التعديل</button>
       </div>
     </div>
   </div>
@@ -1810,14 +1768,6 @@
   </div>
 </div>
 
-<!-- EDIT MODAL -->
-<div class="edit-modal-overlay" id="edit-modal" onclick="closeEditModal(event)">
-  <div class="edit-modal-content" onclick="event.stopPropagation()">
-    <div class="edit-modal-header">✏️ تعديل الطلب</div>
-    <div id="edit-form-container"></div>
-  </div>
-</div>
-
 <div class="toast" id="toast"></div>
 <canvas id="invoice-canvas"></canvas>
 
@@ -1826,7 +1776,8 @@
   let pendingImages = [];
   let selectedOrderForInvoice = null;
   let currentFilter = 'all';
-  let editingId = null;
+  let isEditing = false;
+  let originalOrderData = null;
 
   const MONTHS = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
   const now = new Date();
@@ -1875,7 +1826,11 @@
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById('page-' + tab).classList.add('active');
     if (tab === 'monthly') renderMonthly();
-    if (tab === 'add' && editingId) cancelEdit();
+    
+    // Reset editing state when leaving add page without saving
+    if (tab !== 'add' && isEditing) {
+      // Don't reset automatically, let user decide
+    }
   }
 
   // ── PROFIT CALCULATOR ──
@@ -1952,7 +1907,7 @@
           <div style="font-weight:700">${o.customer}</div>
           <div style="font-size:11px;color:var(--muted);margin-top:2px">${o.date}</div>
         </div>
-        <div style="color:var(--blue);font-weight:700">${(o.amountPaid + o.delivery).toFixed(2)} درهم</div>
+        <div style="color:var(--blue);font-weight:700">${(o.amountPaid + (o.delivery || 0)).toFixed(2)} درهم</div>
       </div>
     `).join('');
     
@@ -2017,7 +1972,7 @@
     ctx.fillStyle = '#374151';
     ctx.font = 'bold 24px Cairo, Arial';
     ctx.textAlign = 'right';
-    ctx.fillText(`الهاتف: ${SHOP_NAME} ${SHOP_PHONE} 📞`, 730, 195);
+    ctx.fillText(`الهاتف: ${SHOP_PHONE} 📞`, 730, 195);
     
     // Line
     ctx.strokeStyle = '#f59e0b';
@@ -2078,7 +2033,7 @@
     let rowY = tableY + 60;
     const rowHeight = 55;
     
-    // Product Cost (hidden actual cost, show selling price)
+    // Product Price (what customer pays)
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(50, rowY, 700, rowHeight);
     ctx.strokeRect(50, rowY, 700, rowHeight);
@@ -2174,19 +2129,25 @@
   }
 
   function clearForm() {
-    ['f-date','f-customer','f-phone','f-amount','f-cost','f-profit','f-delivery','f-edit-id'].forEach(id => {
-      document.getElementById(id).value = '';
-    });
+    document.getElementById('f-date').value = '';
+    document.getElementById('f-customer').value = '';
+    document.getElementById('f-phone').value = '';
     document.getElementById('f-address').value = '';
-    document.getElementById('f-images').value = '';
+    document.getElementById('f-amount').value = '';
+    document.getElementById('f-cost').value = '';
+    document.getElementById('f-profit').value = '';
     document.getElementById('f-delivery').value = DELIVERY_FEE;
+    document.getElementById('f-edit-id').value = '';
+    document.getElementById('f-images').value = '';
     pendingImages = [];
     document.getElementById('preview-grid').innerHTML = '';
-    editingId = null;
+    
+    isEditing = false;
+    originalOrderData = null;
     
     document.getElementById('form-header').textContent = '✨ إضافة طلب جديد';
     document.getElementById('btn-submit').textContent = '+ إضافة الطلب';
-    document.getElementById('btn-cancel').style.display = 'none';
+    document.getElementById('btn-cancel-edit').style.display = 'none';
   }
 
   // ── ADD/EDIT ORDER ──
@@ -2200,77 +2161,105 @@
     const delivery = parseFloat(document.getElementById('f-delivery').value) || DELIVERY_FEE;
     const editId   = document.getElementById('f-edit-id').value;
 
-    if (!date || !customer || isNaN(amount)) {
-      showToast('⚠️ يرجى ملء الحقول المطلوبة', '#f59e0b'); 
+    if (!date || !customer || isNaN(amount) || amount <= 0) {
+      showToast('⚠️ يرجى ملء الحقول المطلوبة بشكل صحيح', '#f59e0b'); 
       return;
     }
 
     const profit = amount - cost;
 
     if (editId) {
-      // Edit existing
+      // Edit existing order
       const index = orders.findIndex(o => o.id == editId);
       if (index !== -1) {
+        // Preserve original images if no new images uploaded
+        const finalImages = pendingImages.length > 0 ? pendingImages : (orders[index].images || []);
+        
         orders[index] = {
-          ...orders[index],
-          customer, phone, address,
+          id: orders[index].id, // Keep original ID
+          customer: customer, 
+          phone: phone,
+          address: address, 
           amountPaid: amount,
           cost: cost,
           profit: profit,
-          delivery, date,
-          images: pendingImages.length > 0 ? pendingImages : orders[index].images
+          delivery: delivery, 
+          date: date,
+          images: finalImages
         };
-        showToast('تم تعديل الطلب بنجاح ✏️');
+        
+        save();
+        showToast('✅ تم حفظ التعديلات بنجاح');
+        clearForm();
+        calcStats();
+        renderOrders();
+        switchTab('home');
       }
     } else {
-      // Add new
-      orders.unshift({
+      // Add new order
+      const newOrder = {
         id: Date.now(),
-        customer, phone, address,
+        customer: customer, 
+        phone: phone,
+        address: address, 
         amountPaid: amount,
         cost: cost,
         profit: profit,
-        delivery, date,
+        delivery: delivery, 
+        date: date,
         images: [...pendingImages]
-      });
-      showToast('تم إضافة الطلب ✓');
+      };
+      
+      orders.unshift(newOrder);
+      save();
+      showToast('✅ تم إضافة الطلب بنجاح');
+      clearForm();
+      calcStats();
+      renderOrders();
+      switchTab('home');
     }
-    
-    save(); 
-    clearForm(); 
-    calcStats(); 
-    renderOrders();
-    switchTab('home');
   }
 
   function editOrder(id) {
     const order = orders.find(o => o.id === id);
-    if (!order) return;
+    if (!order) {
+      showToast('❌ لم يتم العثور على الطلب', '#ef4444');
+      return;
+    }
 
-    editingId = id;
+    // Store original data for comparison
+    originalOrderData = JSON.parse(JSON.stringify(order));
+    isEditing = true;
+
+    // Fill form with order data
     document.getElementById('f-edit-id').value = id;
     document.getElementById('f-date').value = order.date;
-    document.getElementById('f-customer').value = order.customer;
+    document.getElementById('f-customer').value = order.customer || '';
     document.getElementById('f-phone').value = order.phone || '';
     document.getElementById('f-address').value = order.address || '';
-    document.getElementById('f-amount').value = order.amountPaid;
+    document.getElementById('f-amount').value = order.amountPaid || '';
     document.getElementById('f-cost').value = order.cost || (order.amountPaid - order.profit);
-    document.getElementById('f-profit').value = order.profit.toFixed(2);
+    document.getElementById('f-profit').value = order.profit ? order.profit.toFixed(2) : '0';
     document.getElementById('f-delivery').value = order.delivery || DELIVERY_FEE;
     
+    // Load images
     pendingImages = order.images || [];
     renderPreviewGrid();
     
+    // Update UI for edit mode
     document.getElementById('form-header').textContent = '✏️ تعديل الطلب';
     document.getElementById('btn-submit').textContent = '💾 حفظ التعديلات';
-    document.getElementById('btn-cancel').style.display = 'block';
+    document.getElementById('btn-cancel-edit').style.display = 'block';
     
+    // Switch to add tab
     switchTab('add');
   }
 
   function cancelEdit() {
-    clearForm();
-    showToast('تم إلغاء التعديل');
+    if (isEditing) {
+      clearForm();
+      showToast('تم إلغاء التعديل');
+    }
   }
 
   // ── DELETE ──
@@ -2280,7 +2269,7 @@
       save(); 
       calcStats(); 
       renderOrders();
-      showToast('تم حذف الطلب 🗑️');
+      showToast('🗑️ تم حذف الطلب');
     }
   }
 
@@ -2296,8 +2285,8 @@
 
   // ── STATS ──
   function calcStats() {
-    const income = orders.reduce((s,o) => s+o.amountPaid+o.delivery, 0);
-    const profit = orders.reduce((s,o) => s+o.profit+o.delivery, 0);
+    const income = orders.reduce((s,o) => s + (o.amountPaid || 0) + (o.delivery || 0), 0);
+    const profit = orders.reduce((s,o) => s + (o.profit || 0) + (o.delivery || 0), 0);
     document.getElementById('s-income').textContent = income.toFixed(2)+' درهم';
     document.getElementById('s-profit').textContent = profit.toFixed(2)+' درهم';
     document.getElementById('s-cost').textContent   = (income-profit).toFixed(2)+' درهم';
@@ -2322,9 +2311,9 @@
     const searchTerm = document.getElementById('search-input').value.toLowerCase();
     if (searchTerm) {
       filtered = filtered.filter(o => 
-        o.customer.toLowerCase().includes(searchTerm) ||
+        (o.customer && o.customer.toLowerCase().includes(searchTerm)) ||
         (o.address && o.address.toLowerCase().includes(searchTerm)) ||
-        o.date.includes(searchTerm)
+        (o.date && o.date.includes(searchTerm))
       );
     }
     
@@ -2336,7 +2325,7 @@
       weekAgo.setDate(weekAgo.getDate() - 7);
       filtered = filtered.filter(o => new Date(o.date) >= weekAgo);
     } else if (currentFilter === 'high') {
-      filtered = filtered.sort((a,b) => (b.profit+b.delivery) - (a.profit+a.delivery));
+      filtered = filtered.sort((a,b) => ((b.profit || 0)+(b.delivery || 0)) - ((a.profit || 0)+(a.delivery || 0)));
     }
     
     return filtered;
@@ -2362,21 +2351,24 @@
       const phone = o.phone
         ? `<div class="order-date">📞 ${o.phone}</div>`
         : '';
+      const profit = (o.profit || 0) + (o.delivery || 0);
+      const cost = (o.amountPaid || 0) - (o.profit || 0);
+      
       return `
       <div class="order-card">
         <div class="order-top">
           <div>
-            <div class="order-name">${o.customer}</div>
-            <div class="order-date">📅 ${o.date}</div>
+            <div class="order-name">${o.customer || 'بدون اسم'}</div>
+            <div class="order-date">📅 ${o.date || 'بدون تاريخ'}</div>
             ${phone}
             ${addr}
           </div>
-          <div class="order-profit-badge">+${(o.profit+o.delivery).toFixed(2)} درهم</div>
+          <div class="order-profit-badge">+${profit.toFixed(2)} درهم</div>
         </div>
         ${imgs}
         <div class="order-details">
-          <div class="detail-box"><div class="detail-label">مبيعات</div><div class="detail-val b">${(o.amountPaid+o.delivery).toFixed(2)} درهم</div></div>
-          <div class="detail-box"><div class="detail-label">تكلفة</div><div class="detail-val r">${(o.amountPaid-o.profit).toFixed(2)} درهم</div></div>
+          <div class="detail-box"><div class="detail-label">مبيعات</div><div class="detail-val b">${((o.amountPaid || 0)+(o.delivery || 0)).toFixed(2)} درهم</div></div>
+          <div class="detail-box"><div class="detail-label">تكلفة</div><div class="detail-val r">${cost.toFixed(2)} درهم</div></div>
         </div>
         <div class="order-footer">
           <button class="btn-invoice-small" onclick="quickInvoice(${o.id})">🧾 فاتورة</button>
@@ -2407,14 +2399,15 @@
   function renderMonthly() {
     document.getElementById('month-label').textContent = MONTHS[viewMonth] + ' ' + viewYear;
     const mo = orders.filter(o => { 
-      const d=new Date(o.date); 
-      return d.getFullYear()===viewYear && d.getMonth()===viewMonth; 
+      const d = new Date(o.date || 0); 
+      return d.getFullYear() === viewYear && d.getMonth() === viewMonth; 
     });
-    const income = mo.reduce((s,o) => s+o.amountPaid+o.delivery, 0);
-    const profit = mo.reduce((s,o) => s+o.profit+o.delivery, 0);
-    const cost   = mo.reduce((s,o) => s+(o.amountPaid-o.profit), 0);
-    const avg    = mo.length ? profit/mo.length : 0;
-    const pct    = income > 0 ? profit/income*100 : 0;
+    
+    const income = mo.reduce((s,o) => s + (o.amountPaid || 0) + (o.delivery || 0), 0);
+    const profit = mo.reduce((s,o) => s + (o.profit || 0) + (o.delivery || 0), 0);
+    const cost   = mo.reduce((s,o) => s + ((o.amountPaid || 0) - (o.profit || 0)), 0);
+    const avg    = mo.length ? profit / mo.length : 0;
+    const pct    = income > 0 ? (profit / income) * 100 : 0;
     
     document.getElementById('m-profit').textContent = profit.toFixed(2)+' درهم';
     document.getElementById('m-cost').textContent   = cost.toFixed(2)+' درهم';
@@ -2430,20 +2423,25 @@
       el.innerHTML = `<div class="empty"><span class="empty-icon">📭</span>لا توجد طلبات في ${MONTHS[viewMonth]}<br><small style="font-size:12px;color:var(--muted)">جرب الانتقال لشهر آخر</small></div>`;
       return;
     }
-    el.innerHTML = mo.map(o => `
+    
+    el.innerHTML = mo.map(o => {
+      const profit = (o.profit || 0) + (o.delivery || 0);
+      const cost = (o.amountPaid || 0) - (o.profit || 0);
+      return `
       <div class="morder-row">
         <div>
-          <div class="morder-name">${o.customer}</div>
-          <div class="morder-date">${o.date}${o.address ? ' · '+o.address.split('\n')[0] : ''}</div>
+          <div class="morder-name">${o.customer || 'بدون اسم'}</div>
+          <div class="morder-date">${o.date || ''}${o.address ? ' · ' + o.address.split('\n')[0] : ''}</div>
         </div>
         <div>
-          <div class="morder-profit">+${(o.profit+o.delivery).toFixed(2)} ربح</div>
-          <div class="morder-cost">−${(o.amountPaid-o.profit).toFixed(2)} تكلفة</div>
+          <div class="morder-profit">+${profit.toFixed(2)} ربح</div>
+          <div class="morder-cost">−${cost.toFixed(2)} تكلفة</div>
         </div>
-      </div>`).join('');
+      </div>`;
+    }).join('');
   }
 
-  // ── AI ASSISTANT ──
+  // ── AI ASSISTANT (Broker Style) ──
   function toggleAI() {
     document.getElementById('ai-modal').classList.toggle('open');
   }
@@ -2459,9 +2457,9 @@
     
     // Generate response
     setTimeout(() => {
-      const response = generateAIResponse(message);
+      const response = generateBrokerResponse(message);
       addAIMessage(response, 'bot');
-    }, 500);
+    }, 600);
   }
 
   function addAIMessage(text, type) {
@@ -2473,43 +2471,100 @@
     container.scrollTop = container.scrollHeight;
   }
 
-  function generateAIResponse(message) {
+  function generateBrokerResponse(message) {
     const lower = message.toLowerCase();
     
-    if (lower.includes('ربح') || lower.includes('فلوس') || lower.includes('فلوس')) {
-      const totalProfit = orders.reduce((s,o) => s+o.profit+o.delivery, 0);
-      return `أرباحك الكلية حتى الآن: <strong>${totalProfit.toFixed(2)} درهم</strong> 💰<br><br>أنصحك بزيادة المنتجات ذات هامش الربح العالي!`;
+    // Greetings
+    if (lower.includes('سلام') || lower.includes('مرحبا') || lower.includes('hi') || lower.includes('hello')) {
+      return 'وعليكم السلام خويا! كيفاه نقدر نعاونك اليوم في شغل التجارة؟';
     }
     
-    if (lower.includes('طلب') || lower.includes('order')) {
-      return `لديك <strong>${orders.length}</strong> طلب في السجل.<br>أكثر شهر ربحاً: ${getBestMonth()}`;
+    // Profit questions
+    if (lower.includes('ربح') || lower.includes('فلوس') || lower.includes('درهم') || lower.includes('فلوس')) {
+      const totalProfit = orders.reduce((s,o) => s + (o.profit || 0) + (o.delivery || 0), 0);
+      const totalSales = orders.reduce((s,o) => s + (o.amountPaid || 0) + (o.delivery || 0), 0);
+      
+      if (totalProfit > 0) {
+        return `الحمد لله خويا! أرباحك حتى الآن: <strong>${totalProfit.toFixed(2)} درهم</strong> 💰<br><br>
+        المبيعات: ${totalSales.toFixed(2)} درهم<br>
+        نسبة الربح: ${((totalProfit/totalSales)*100).toFixed(1)}%<br><br>
+        كمل في نفس النمط وربي يبارك لك!`;
+      } else {
+        return 'خويا لسا ما بديتي تبيع؟ لا باس، كل شي بوقتو زين. بدي بأول طلب وكمل!';
+      }
     }
     
-    if (lower.includes('نصيحة') || lower.includes('نصائح') || lower.includes('help')) {
-      return `💡 نصائح لزيادة أرباحك:<br><br>
-      1. ركز على المنتجات التي يزيد ربحها عن 30 درهم<br>
-      2. قدم خصومات للطلبات المتعددة<br>
-      3. استهدف المناسبات والأعياد<br>
-      4. حسّن صور المنتجات لجذب المزيد من الزبائن`;
+    // Orders count
+    if (lower.includes('طلب') || lower.includes('order') || lower.includes('بيع')) {
+      const count = orders.length;
+      if (count === 0) {
+        return 'خويا لسا ما عندك حتى طلب. ضيف أول طلب وانطلق!';
+      } else if (count < 5) {
+        return `عندك <strong>${count}</strong> طلبات حتى الآن. مازال في البداية خويا، كمل وربي يوفقك!`;
+      } else {
+        return `ماشاء الله خويا! عندك <strong>${count}</strong> طلب. كمل في نفس النمط وطور روحك!`;
+      }
     }
     
-    if (lower.includes('حاسبة') || lower.includes('احسب')) {
-      return `🧮 استخدم الحاسبة العائمة! اضغط على زر الوردي 🧮 في الأسفل لحساب الأرباح بسرعة.`;
+    // Tips and advice
+    if (lower.includes('نصيحة') || lower.includes('نصايح') || lower.includes('help') || lower.includes('مساعدة') || lower.includes('كيف')) {
+      const tips = [
+        '💡 <strong>نصيحة اليوم:</strong><br>دير عينك على المنتجات لي تربح فيهم +30 درهم. المنتجات الصغيرة تتباع بزاف!',
+        '📸 <strong>نصيحة في الصور:</strong><br>صور المنتج بإضاءة زينة وخلفية نقية. الزبون يشوف الصورة قبل ما يشري.',
+        '💬 <strong>نصيحة في التواصل:</strong><br>كون صريح مع الزبائن. قولهم الوقت المتوقع للتوصيل وخليهم يعرفوا كلش.',
+        '🎯 <strong>نصيحة في الأسعار:</strong><br>دير سعر تنافسي ولكن ما تبيعش بخسارة. احسب التكلفة + الربح + مصاريف التوصيل.',
+        '📱 <strong>نصيحة في التسويق:</strong><br>استخدم ستوريات انستغرام وواتساب. دير عروض خاصة للزبائن القدام.'
+      ];
+      return tips[Math.floor(Math.random() * tips.length)];
     }
     
-    if (lower.includes('فاتورة') || lower.includes('invoice')) {
-      return `🧾 لإنشاء فاتورة للزبون:<br>1. اذهب إلى "الرئيسية"<br>2. اضغط على زر "فاتورة PNG"<br>3. اختر الطلب<br><br>الفاتورة تحتوي على سعر البيع + 15 درهم توصيل + 10 درهم بنك`;
+    // Calculator
+    if (lower.includes('حاسبة') || lower.includes('احسب') || lower.includes('calc')) {
+      return '🧮 استخدم الحاسبة العائمة خويا! اضغط على الزر الوردي 🧮 في الأسفل.<br><br>تحب نحسب لك شي حاجة؟';
     }
     
-    if (lower.includes('تصدير') || lower.includes('export')) {
-      return `📤 للتصدير: اضغط زر "تصدير" في الصفحة الرئيسية.<br>سيتم حفظ جميع طلباتك في ملف JSON يمكن استيراده لاحقاً.`;
+    // Invoice
+    if (lower.includes('فاتورة') || lower.includes('invoice') || lower.includes('facture')) {
+      return '🧾 الفاتورة فيها:<br>• سعر المنتج (للزبون)<br>• 15 درهم توصيل<br>• 10 درهم بنك<br><br>الزبون ما يشوفش الربح ديالك، غير التكاليف الظاهرة!';
     }
     
-    if (lower.includes('تعديل') || lower.includes('edit')) {
-      return `✏️ لتعديل طلب:<br>1. اذهب إلى "الرئيسية"<br>2. اضغط على زر "تعديل" في بطاقة الطلب<br>3. عدل البيانات واحفظ`;
+    // Best products
+    if (lower.includes('منتج') || lower.includes('product') || lower.includes('بضاعة')) {
+      return '📦 أفضل المنتجات لي تتباع في Temu:<br><br>• إكسسوارات الهاتف (كفرات، حمايات)<br>• أدوات منزلية صغيرة<br>• إكسسوارات السيارات<br>• أدوات تجميل<br>• ألعاب أطفال صغيرة<br><br>دير فيهم وربي يبارك!';
     }
     
-    return `🤔 لم أفهم سؤالك تماماً.<br><br>يمكنني مساعدتك في:<br>• معرفة أرباحك<br>• عدد الطلبات<br>• نصائح للبيع<br>• كيفية استخدام التطبيق<br><br>جرب أن تسأل: "كم ربحي؟" أو "أعطني نصيحة"`;
+    // Problems
+    if (lower.includes('مشكل') || lower.includes('problem') || lower.includes('خطأ') || lower.includes('error')) {
+      return 'شنو المشكل خويا؟ وصف لي ونحاولو نلقاو الحل مع بعض.<br><br>إذا كان شي خطأ في التطبيق، جرب ت刷新 الصفحة.';
+    }
+    
+    // Thank you
+    if (lower.includes('شكر') || lower.includes('merci') || lower.includes('thanks')) {
+      return 'العفو خويا! ربي يوفقك في تجارتك ويزيدك من فضليه. تحتاج شي حاجة أخرى؟';
+    }
+    
+    // Default response
+    return `سمعتك خويا! "${message}"<br><br>مكنش فهمتك مزيان. جرب تسألني على:<br>• أرباحك<br>• عدد الطلبات<br>• نصايح للبيع<br>• كيفاش تخدم الفاتورة<br><br>كيفاه نقدر نعاونك؟`;
+  }
+
+  function showStatsAI() {
+    const totalOrders = orders.length;
+    const totalProfit = orders.reduce((s,o) => s + (o.profit || 0) + (o.delivery || 0), 0);
+    const avgProfit = totalOrders ? totalProfit / totalOrders : 0;
+    const bestMonth = getBestMonth();
+    
+    toggleAI();
+    setTimeout(() => {
+      addAIMessage(
+        `📊 <strong>تحليل أدائك يا وسيط:</strong><br><br>
+        • إجمالي الطلبات: ${totalOrders}<br>
+        • إجمالي الأرباح: ${totalProfit.toFixed(2)} درهم<br>
+        • متوسط الربح/طلب: ${avgProfit.toFixed(2)} درهم<br>
+        • أفضل شهر: ${bestMonth}<br><br>
+        ${avgProfit > 50 ? '🌟 ماشاء الله! أداء ممتاز خويا.' : '💡 نصيحتي: حاول تزيد من هامش الربح في كل طلب.'}`,
+        'bot'
+      );
+    }, 300);
   }
 
   function getBestMonth() {
@@ -2517,9 +2572,10 @@
     
     const monthProfits = {};
     orders.forEach(o => {
+      if (!o.date) return;
       const d = new Date(o.date);
       const key = `${d.getFullYear()}-${d.getMonth()}`;
-      monthProfits[key] = (monthProfits[key] || 0) + o.profit + o.delivery;
+      monthProfits[key] = (monthProfits[key] || 0) + (o.profit || 0) + (o.delivery || 0);
     });
     
     const best = Object.entries(monthProfits).sort((a,b) => b[1]-a[1])[0];
@@ -2527,26 +2583,6 @@
     
     const [year, month] = best[0].split('-');
     return `${MONTHS[parseInt(month)]} ${year} (${best[1].toFixed(0)} درهم)`;
-  }
-
-  function showStatsAI() {
-    const totalOrders = orders.length;
-    const totalProfit = orders.reduce((s,o) => s+o.profit+o.delivery, 0);
-    const avgProfit = totalOrders ? totalProfit / totalOrders : 0;
-    const bestMonth = getBestMonth();
-    
-    toggleAI();
-    setTimeout(() => {
-      addAIMessage(
-        `📊 <strong>تحليل أدائك:</strong><br><br>
-        • إجمالي الطلبات: ${totalOrders}<br>
-        • إجمالي الأرباح: ${totalProfit.toFixed(2)} درهم<br>
-        • متوسط الربح/طلب: ${avgProfit.toFixed(2)} درهم<br>
-        • أفضل شهر: ${bestMonth}<br><br>
-        ${avgProfit > 50 ? '🌟 أداء ممتاز! استمر بنفس النمط.' : '💡 يمكنك تحسين الأرباح بزيادة منتجات الهامش العالي.'}`,
-        'bot'
-      );
-    }, 300);
   }
 
   // ── CALCULATOR ──
@@ -2590,6 +2626,9 @@
   document.getElementById('f-delivery').value = DELIVERY_FEE;
   calcStats(); 
   renderOrders();
+  
+  // Set today's date as default for new orders
+  document.getElementById('f-date').valueAsDate = new Date();
 </script>
 </body>
 </html>
