@@ -1,5 +1,10 @@
-const CACHE = 'temu-v1';
-const FILES = ['./index.html', './manifest.json'];
+const CACHE = 'temu-v2'; // تم زيادة الرقم لتحديث التخزين
+const FILES = [
+  './index.html', 
+  './manifest.json',
+  './icon-192.png',   // إضافة الأيقونات للكاش
+  './icon-512.png'
+];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)));
