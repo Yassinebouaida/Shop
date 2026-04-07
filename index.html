@@ -390,8 +390,8 @@
   <div class="form-group">
     <label class="form-label">إدارة البيانات</label>
     <button class="btn-main" onclick="exportData()" style="background:var(--green); margin-bottom:10px;">📥 تصدير البيانات (نسخة احتياطية)</button>
-    <button class="btn-main" onclick="document.getElementById('import-file').click()" style="background:var(--blue);">📤 استيراد نسخة سابقة</button>
-    <input type="file" id="import-file" hidden onchange="importData(this)">
+    <button class="btn-main" onclick="triggerFileImport()" style="background:var(--blue);">📤 استيراد نسخة سابقة</button>
+    <input type="file" id="import-file" accept=".json" style="display: none;" onchange="importData(this)">
   </div>
   
   <div class="form-group" style="margin-top:30px;">
@@ -594,7 +594,7 @@
       <div class="order-card">
         <div class="order-header">
           <div>
-            <div class="order-customer">${o.customer}</div>
+            <div class="order-customer">${escapeHtml(o.customer)}</div>
             <div class="order-date">📅 ${o.date}</div>
           </div>
           <div style="text-align:left">
@@ -624,6 +624,19 @@
     }).join('');
     
     document.getElementById('total-orders-display').textContent = `${orders.length} طلبات`;
+  }
+
+  // Helper function to escape HTML
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function(m) {
+      if (m === '&') return '&amp;';
+      if (m === '<') return '&lt;';
+      if (m === '>') return '&gt;';
+      return m;
+    }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
+      return c;
+    });
   }
 
   function updateStats() {
@@ -664,6 +677,12 @@
       document.getElementById('bar-done').style.width = pDone + '%';
       document.getElementById('bar-pending').style.width = pPending + '%';
       document.getElementById('bar-cancelled').style.width = pCancel + '%';
+    } else {
+      document.getElementById('best-customer').textContent = '-';
+      document.getElementById('avg-profit').textContent = '0.00';
+      document.getElementById('bar-done').style.width = '0%';
+      document.getElementById('bar-pending').style.width = '0%';
+      document.getElementById('bar-cancelled').style.width = '0%';
     }
   }
 
@@ -746,15 +765,23 @@
   function filterList(type, btn) {
     currentFilter = type;
     // Update UI tabs
-    btn.parentElement.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    const parent = btn.parentElement;
+    if(parent) {
+      Array.from(parent.children).forEach(t => t.classList.remove('active'));
+    }
     btn.classList.add('active');
     renderList();
   }
 
   function switchTab(pageId) {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    // Update active tab styling
+    const tabs = document.querySelectorAll('.tabs .tab');
+    tabs.forEach(tab => {
+      tab.classList.remove('active');
+    });
     event.target.classList.add('active');
     
+    // Show selected page
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById(pageId + '-page').classList.add('active');
   }
@@ -777,64 +804,94 @@
     setTimeout(() => t.classList.remove('show'), 3000);
   }
 
-  // --- DATA MANAGEMENT (FIXED EXPORT) ---
+  // --- FIXED DATA MANAGEMENT (IMPORT/EXPORT) ---
+  
+  function triggerFileImport() {
+    // Trigger the hidden file input
+    document.getElementById('import-file').click();
+  }
 
   function exportData() {
     try {
-      // تحويل البيانات إلى نص JSON
+      // Convert orders to JSON string
       const dataStr = JSON.stringify(orders, null, 2);
       
-      // إنشاء كائن Blob (أكثر استقراراً على الموبايل)
+      // Create a Blob with proper MIME type
       const blob = new Blob([dataStr], { type: 'application/json' });
       
-      // إنشاء رابط تحميل مؤقت
+      // Create download link
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
       
-      // تسمية الملف بتاريخ اليوم
+      // Name file with current date
       const date = new Date().toISOString().slice(0,10);
       a.download = `Temu_Backup_${date}.json`;
       
-      // محاكاة الضغط لبدء التحميل
+      // Append to body, click, and remove
       document.body.appendChild(a);
       a.click();
-      
-      // التنظيف
       document.body.removeChild(a);
+      
+      // Clean up the object URL
       URL.revokeObjectURL(url);
       
       showToast('تم تحميل النسخة الاحتياطية بنجاح 📥');
     } catch (e) {
-      console.error(e);
+      console.error('Export error:', e);
       showToast('حدث خطأ أثناء التصدير، جرب مرة أخرى', 'error');
     }
   }
 
   function importData(input) {
     const file = input.files[0];
-    if(!file) return;
+    if (!file) return;
+    
+    // Validate file type
+    if (file.type !== 'application/json' && !file.name.endsWith('.json')) {
+      showToast('الرجاء اختيار ملف JSON صالح', 'error');
+      input.value = ''; // Reset input
+      return;
+    }
+    
     const reader = new FileReader();
+    
     reader.onload = function(e) {
       try {
-        const data = JSON.parse(e.target.result);
-        if(Array.isArray(data)) {
-          if(confirm('سيتم استبدال البيانات الحالية بـ ' + data.length + ' طلب. متأكد؟')) {
-            orders = data;
+        // Parse the JSON data
+        const importedData = JSON.parse(e.target.result);
+        
+        // Validate that it's an array
+        if (Array.isArray(importedData)) {
+          if (confirm(`سيتم استبدال البيانات الحالية (${orders.length} طلب) بـ ${importedData.length} طلب. هل أنت متأكد؟`)) {
+            // Replace current orders with imported data
+            orders = importedData;
+            // Save to localStorage
             localStorage.setItem('temu_orders_v2', JSON.stringify(orders));
+            // Refresh UI
             renderList();
             updateStats();
-            showToast('تم استعادة النسخة الاحتياطية ✅');
+            showToast(`تم استيراد ${importedData.length} طلب بنجاح ✅`);
           }
         } else {
-          alert('الملف غير صالح');
+          showToast('الملف المحدد لا يحتوي على بيانات صالحة (يجب أن يكون مصفوفة من الطلبات)', 'error');
         }
-      } catch(err) {
-        alert('خطأ في قراءة الملف');
+      } catch (err) {
+        console.error('Import parse error:', err);
+        showToast('خطأ في قراءة الملف: تأكد من أنه ملف JSON صالح', 'error');
+      } finally {
+        // Clear the file input to allow re-importing the same file
+        input.value = '';
       }
     };
-    reader.readAsText(file);
-    input.value = ''; // Reset input
+    
+    reader.onerror = function() {
+      showToast('حدث خطأ أثناء قراءة الملف', 'error');
+      input.value = '';
+    };
+    
+    // Read the file as text
+    reader.readAsText(file, 'UTF-8');
   }
 
   function resetAllData() {
@@ -888,6 +945,11 @@
     div.innerHTML = txt;
     box.appendChild(div);
     box.scrollTop = box.scrollHeight;
+  }
+  
+  // Hide alert function (if needed)
+  function hideAlert() {
+    document.getElementById('alert-box').classList.remove('show');
   }
 </script>
 </body>
