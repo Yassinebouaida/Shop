@@ -5,8 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Temu Tracker">
+<meta name="apple-mobile-web-app-title" content="Temu ربح">
 <meta name="theme-color" content="#f59e0b">
+
+<!-- PWA Manifest Link -->
+<link rel="manifest" href="manifest.json">
+
 <title>مدير أرباح Temu</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;700;800&display=swap" rel="stylesheet">
 <!-- jsPDF for PDF export -->
@@ -490,6 +494,13 @@
     
     // Set default date
     document.getElementById('inp-date').valueAsDate = new Date();
+    
+    // Register Service Worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js')
+        .then(() => console.log('Service Worker Registered'))
+        .catch(err => console.log('SW Registration Failed', err));
+    }
   });
 
   // --- THEME ---
@@ -766,16 +777,38 @@
     setTimeout(() => t.classList.remove('show'), 3000);
   }
 
-  // --- DATA MANAGEMENT ---
+  // --- DATA MANAGEMENT (FIXED EXPORT) ---
 
   function exportData() {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(orders));
-    const downloadAnchorNode = document.createElement('a');
-    downloadAnchorNode.setAttribute("href", dataStr);
-    downloadAnchorNode.setAttribute("download", "temu_backup_" + new Date().toISOString().slice(0,10) + ".json");
-    document.body.appendChild(downloadAnchorNode);
-    downloadAnchorNode.click();
-    downloadAnchorNode.remove();
+    try {
+      // تحويل البيانات إلى نص JSON
+      const dataStr = JSON.stringify(orders, null, 2);
+      
+      // إنشاء كائن Blob (أكثر استقراراً على الموبايل)
+      const blob = new Blob([dataStr], { type: 'application/json' });
+      
+      // إنشاء رابط تحميل مؤقت
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      
+      // تسمية الملف بتاريخ اليوم
+      const date = new Date().toISOString().slice(0,10);
+      a.download = `Temu_Backup_${date}.json`;
+      
+      // محاكاة الضغط لبدء التحميل
+      document.body.appendChild(a);
+      a.click();
+      
+      // التنظيف
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      showToast('تم تحميل النسخة الاحتياطية بنجاح 📥');
+    } catch (e) {
+      console.error(e);
+      showToast('حدث خطأ أثناء التصدير، جرب مرة أخرى', 'error');
+    }
   }
 
   function importData(input) {
