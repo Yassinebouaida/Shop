@@ -7,18 +7,10 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Temu ربح">
 <meta name="theme-color" content="#f59e0b">
-
-<!-- PWA Manifest Link -->
 <link rel="manifest" href="manifest.json">
-
 <title>مدير أرباح Temu</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;700;800&display=swap" rel="stylesheet">
-<!-- jsPDF for PDF export -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
-  /* ═══════════════════════════════════════
-     CSS VARIABLES — Themes
-  ═══════════════════════════════════════ */
   :root {
     --bg: #0a0a0f;
     --surface: #151520;
@@ -28,19 +20,12 @@
     --text: #f0f0f5;
     --muted: #6b7280;
     --green: #10b981;
-    --green-glow: rgba(16,185,129,0.4);
     --blue: #3b82f6;
-    --blue-glow: rgba(59,130,246,0.4);
     --red: #ef4444;
-    --red-glow: rgba(239,68,68,0.4);
     --amber: #f59e0b;
-    --amber-glow: rgba(245,158,11,0.4);
     --purple: #8b5cf6;
-    --purple-glow: rgba(139,92,246,0.4);
     --shadow-deep: rgba(0,0,0,0.5);
-    --radius: 18px;
   }
-
   body.light-mode {
     --bg: #f5f5f7;
     --surface: #ffffff;
@@ -49,33 +34,18 @@
     --border: rgba(0,0,0,0.08);
     --text: #1a1a2e;
     --muted: #8e8e93;
-    --shadow-deep: rgba(0,0,0,0.1);
   }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; outline: none; }
-
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   body {
     font-family: 'Cairo', sans-serif;
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
-    padding-bottom: 100px; /* Space for FAB */
-    background-image:
-      radial-gradient(circle at 20% 50%, rgba(245,158,11,0.08) 0%, transparent 50%),
-      radial-gradient(circle at 80% 80%, rgba(139,92,246,0.05) 0%, transparent 50%);
-    transition: background 0.3s ease, color 0.3s ease;
-    overflow-x: hidden;
+    padding-bottom: 100px;
+    transition: background 0.3s, color 0.3s;
   }
-
-  body.light-mode {
-    background-image:
-      radial-gradient(circle at 20% 50%, rgba(245,158,11,0.05) 0%, transparent 50%),
-      radial-gradient(circle at 80% 80%, rgba(139,92,246,0.03) 0%, transparent 50%);
-  }
-
-  /* ══════════ HEADER ══════════ */
   .header {
-    background: linear-gradient(135deg, var(--surface) 0%, var(--surface2) 100%);
+    background: linear-gradient(135deg, var(--surface), var(--surface2));
     border-bottom: 1px solid var(--border);
     padding: 1rem;
     position: sticky;
@@ -86,202 +56,236 @@
     align-items: center;
     box-shadow: 0 4px 20px var(--shadow-deep);
   }
-
   .header h1 { font-size: 18px; font-weight: 800; }
   .header h1 span { color: var(--amber); }
-  .header p { font-size: 10px; color: var(--muted); margin-top: 2px; }
-
   .theme-toggle {
-    background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 50%; width: 40px; height: 40px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 18px; cursor: pointer; color: var(--text);
-    transition: 0.3s;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
   }
-
-  /* ══════════ ALERTS ══════════ */
-  .alert-banner {
-    display: none; margin: 1rem; padding: 12px;
-    background: rgba(245,158,11,0.1); border: 1px solid var(--amber);
-    border-radius: 12px; align-items: center; gap: 10px;
-    animation: fadeIn 0.4s ease;
-  }
-  .alert-banner.show { display: flex; }
-  .alert-text { font-size: 13px; color: var(--amber); font-weight: 600; flex: 1; }
-  .alert-close { background: none; border: none; color: var(--amber); font-size: 18px; cursor: pointer; }
-
-  /* ══════════ TABS ══════════ */
   .tabs {
-    display: flex; background: var(--surface);
+    display: flex;
+    background: var(--surface);
     border-bottom: 1px solid var(--border);
-    position: sticky; top: 60px; z-index: 40;
-    padding: 8px; gap: 8px;
+    position: sticky;
+    top: 60px;
+    z-index: 40;
+    padding: 8px;
+    gap: 8px;
   }
-
   .tab {
-    flex: 1; padding: 10px;
-    font-family: 'Cairo', sans-serif; font-size: 13px; font-weight: 700;
-    color: var(--muted); background: transparent;
-    border-radius: 12px; cursor: pointer;
-    text-align: center; transition: 0.3s;
+    flex: 1;
+    padding: 10px;
+    font-weight: 700;
+    color: var(--muted);
+    background: transparent;
+    border-radius: 12px;
+    cursor: pointer;
+    text-align: center;
   }
-
   .tab.active {
-    color: #000; background: var(--amber);
-    box-shadow: 0 4px 12px rgba(245,158,11,0.3);
+    color: #000;
+    background: var(--amber);
   }
-  body.light-mode .tab.active { color: #000; }
-
-  /* ══════════ PAGES ══════════ */
-  .page { display: none; padding: 1rem; animation: fadeIn 0.3s ease; }
+  .page { display: none; padding: 1rem; animation: fadeIn 0.3s; }
   .page.active { display: block; }
-
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-  /* ══════════ STATS CARDS ══════════ */
-  .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1rem; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 1rem;
+  }
   .stat {
     background: linear-gradient(145deg, var(--surface), var(--surface2));
-    border: 1px solid var(--border); border-radius: 16px; padding: 14px;
-    position: relative; overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 14px;
   }
   .stat.wide { grid-column: 1/-1; display: flex; justify-content: space-between; align-items: center; }
-  .stat-label { font-size: 11px; color: var(--muted); font-weight: 700; text-transform: uppercase; }
+  .stat-label { font-size: 11px; color: var(--muted); font-weight: 700; }
   .stat-val { font-size: 20px; font-weight: 800; margin-top: 4px; }
   .stat-val.g { color: var(--green); }
   .stat-val.r { color: var(--red); }
   .stat-val.b { color: var(--blue); }
-
-  /* ══════════ ORDER LIST ══════════ */
   .order-card {
     background: linear-gradient(145deg, var(--surface), var(--surface2));
-    border: 1px solid var(--border); border-radius: 16px;
-    padding: 16px; margin-bottom: 12px;
-    position: relative;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 12px;
   }
-
   .order-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
   .order-customer { font-weight: 800; font-size: 16px; }
-  .order-date { font-size: 11px; color: var(--muted); display: flex; align-items: center; gap: 4px; margin-top: 4px; }
-  
-  /* Status Badges */
+  .order-date { font-size: 11px; color: var(--muted); margin-top: 4px; }
   .status-badge {
-    font-size: 10px; padding: 4px 8px; border-radius: 6px; font-weight: 700;
-    display: inline-block; margin-top: 6px;
+    font-size: 10px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-weight: 700;
+    display: inline-block;
   }
-  .status-completed { background: rgba(16,185,129,0.15); color: var(--green); border: 1px solid rgba(16,185,129,0.3); }
-  .status-pending { background: rgba(245,158,11,0.15); color: var(--amber); border: 1px solid rgba(245,158,11,0.3); }
-  .status-cancelled { background: rgba(239,68,68,0.15); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
-  .status-returned { background: rgba(107,114,128,0.15); color: var(--muted); border: 1px solid var(--border); }
-
-  .order-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
+  .status-completed { background: rgba(16,185,129,0.15); color: var(--green); }
+  .status-pending { background: rgba(245,158,11,0.15); color: var(--amber); }
+  .status-cancelled { background: rgba(239,68,68,0.15); color: var(--red); }
+  .order-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+  }
   .o-cell { background: var(--surface2); padding: 8px; border-radius: 10px; text-align: center; }
-  .o-label { font-size: 10px; color: var(--muted); display: block; margin-bottom: 2px; }
-  .o-val { font-size: 14px; font-weight: 800; }
-
+  .o-label { font-size: 10px; color: var(--muted); display: block; }
   .order-actions {
-    display: flex; gap: 8px; margin-top: 12px;
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
   }
-
   .btn-mini {
-    flex: 1; padding: 8px; border-radius: 8px; border: none;
-    font-family: 'Cairo', sans-serif; font-size: 12px; font-weight: 700;
-    cursor: pointer; color: #fff; display: flex; align-items: center; justify-content: center; gap: 4px;
+    flex: 1;
+    padding: 8px;
+    border-radius: 8px;
+    border: none;
+    font-weight: 700;
+    cursor: pointer;
+    color: #fff;
   }
   .btn-edit { background: var(--blue); }
   .btn-clone { background: var(--purple); }
   .btn-del { background: var(--surface3); color: var(--muted); border: 1px solid var(--border); }
-
-  /* ══════════ FORM ══════════ */
   .form-group { margin-bottom: 14px; }
-  .form-label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; font-weight: 600; }
+  .form-label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
   .form-input, .form-select {
-    width: 100%; background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 12px; padding: 14px; color: var(--text);
-    font-family: 'Cairo', sans-serif; font-size: 15px;
-    transition: 0.3s;
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    color: var(--text);
+    font-family: 'Cairo', sans-serif;
   }
-  .form-input:focus { border-color: var(--blue); }
-  
   .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-
   .btn-main {
-    width: 100%; padding: 16px; background: var(--blue); color: #fff;
-    border: none; border-radius: 14px; font-size: 16px; font-weight: 800;
-    font-family: 'Cairo', sans-serif; cursor: pointer; margin-top: 10px;
-    box-shadow: 0 4px 15px rgba(59,130,246,0.3);
+    width: 100%;
+    padding: 16px;
+    background: var(--blue);
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    margin-top: 10px;
   }
-  .btn-main:active { transform: scale(0.98); }
-
-  /* ══════════ FLOATING ACTION BUTTON (FAB) ══════════ */
   .fab-add {
-    position: fixed; bottom: 25px; left: 25px;
-    width: 60px; height: 60px; border-radius: 50%;
+    position: fixed;
+    bottom: 25px;
+    left: 25px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
     background: linear-gradient(135deg, var(--blue), #2563eb);
-    color: #fff; font-size: 30px;
-    display: flex; align-items: center; justify-content: center;
+    color: #fff;
+    font-size: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     box-shadow: 0 8px 25px rgba(37,99,235,0.5);
-    z-index: 100; cursor: pointer; border: none;
-    transition: transform 0.2s;
+    cursor: pointer;
+    border: none;
+    z-index: 100;
   }
-  .fab-add:active { transform: scale(0.9); }
-
-  /* ══════════ AI & OTHER MODALS ══════════ */
   .ai-btn {
-    position: fixed; bottom: 25px; right: 25px;
-    width: 55px; height: 55px; border-radius: 50%;
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
     background: linear-gradient(135deg, var(--purple), #7c3aed);
-    color: #fff; font-size: 24px;
-    display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 8px 25px rgba(124,58,237,0.4);
-    z-index: 100; cursor: pointer; border: none;
+    color: #fff;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: none;
+    z-index: 100;
   }
-
   .modal-overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.85);
-    backdrop-filter: blur(8px); z-index: 200;
-    display: none; align-items: flex-end; justify-content: center;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(8px);
+    z-index: 200;
+    display: none;
+    align-items: flex-end;
+    justify-content: center;
   }
   .modal-overlay.open { display: flex; }
-  
   .modal-content {
-    background: var(--surface); width: 100%; max-width: 500px;
-    border-radius: 24px 24px 0 0; padding: 20px;
-    max-height: 85vh; overflow-y: auto;
-    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    border: 1px solid var(--border); border-bottom: none;
+    background: var(--surface);
+    width: 100%;
+    max-width: 500px;
+    border-radius: 24px 24px 0 0;
+    padding: 20px;
+    max-height: 85vh;
+    overflow-y: auto;
   }
-
-  @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-
-  .chat-box { height: 300px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px; }
-  .msg { padding: 10px 14px; border-radius: 16px; font-size: 14px; max-width: 80%; line-height: 1.5; }
-  .msg.bot { background: var(--surface2); color: var(--text); align-self: flex-start; border-bottom-right-radius: 4px; }
-  .msg.user { background: var(--blue); color: #fff; align-self: flex-end; border-bottom-left-radius: 4px; }
-
+  .chat-box {
+    height: 300px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .msg {
+    padding: 10px 14px;
+    border-radius: 16px;
+    max-width: 80%;
+  }
+  .msg.bot { background: var(--surface2); align-self: flex-start; }
+  .msg.user { background: var(--blue); color: #fff; align-self: flex-end; }
   .chat-input-area { display: flex; gap: 10px; }
-  .chat-input { flex: 1; background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 12px; color: var(--text); }
-  .chat-send { width: 45px; height: 45px; border-radius: 50%; border: none; background: var(--purple); color: #fff; font-size: 18px; display: flex; align-items: center; justify-content: center; }
-
-  /* ══════════ TOAST ══════════ */
+  .chat-input {
+    flex: 1;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 12px;
+    color: var(--text);
+  }
+  .chat-send {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border: none;
+    background: var(--purple);
+    color: #fff;
+  }
   .toast {
-    position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px);
-    background: var(--surface); color: var(--text); border: 1px solid var(--border);
-    padding: 12px 24px; border-radius: 30px; font-size: 14px; font-weight: 600;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 300;
-    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    display: flex; align-items: center; gap: 8px;
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-100px);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 12px 24px;
+    border-radius: 30px;
+    font-weight: 600;
+    z-index: 300;
+    transition: transform 0.3s;
   }
   .toast.show { transform: translateX(-50%) translateY(0); }
-  .toast.success { border-color: var(--green); color: var(--green); }
-  .toast.error { border-color: var(--red); color: var(--red); }
-
-  /* Helper Classes */
-  .text-center { text-align: center; }
-  .mt-2 { margin-top: 1rem; }
   .hidden { display: none; }
-  
-  /* Mobile Adjustments */
   @media (max-width: 380px) {
     .stats { grid-template-columns: 1fr; }
     .stat.wide { flex-direction: column; align-items: flex-start; gap: 10px; }
@@ -289,234 +293,99 @@
 </style>
 </head>
 <body>
-
-<!-- Header -->
 <div class="header">
-  <div>
-    <h1>تتبع <span>Temu</span></h1>
-    <p id="total-orders-display">0 طلبات</p>
-  </div>
+  <div><h1>تتبع <span>Temu</span></h1><p id="total-orders-display">0 طلبات</p></div>
   <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
 </div>
-
-<!-- Alert -->
-<div class="alert-banner" id="alert-box">
-  <span class="alert-icon">🔔</span>
-  <span class="alert-text" id="alert-msg">رسالة تنبيه</span>
-  <button class="alert-close" onclick="hideAlert()">✕</button>
-</div>
-
-<!-- Navigation Tabs -->
 <div class="tabs">
   <button class="tab active" onclick="switchTab('home')">🏠 الرئيسية</button>
   <button class="tab" onclick="switchTab('analytics')">📊 التحليل</button>
   <button class="tab" onclick="switchTab('settings')">⚙️ الإعدادات</button>
 </div>
-
-<!-- HOME PAGE -->
 <div class="page active" id="home-page">
   <div class="stats">
-    <div class="stat">
-      <div class="stat-label">المبيعات</div>
-      <div class="stat-val b" id="home-sales">0.00</div>
-    </div>
-    <div class="stat">
-      <div class="stat-label">الربح الصافي</div>
-      <div class="stat-val g" id="home-profit">0.00</div>
-    </div>
-    <div class="stat wide">
-      <div>
-        <div class="stat-label">التكلفة</div>
-        <div class="stat-val r" id="home-cost">0.00</div>
-      </div>
-      <div style="text-align:left">
-        <div class="stat-label">صافي الكرتون</div>
-        <div class="stat-val" style="color:var(--amber)" id="home-net-cash">0.00</div>
-      </div>
-    </div>
+    <div class="stat"><div class="stat-label">المبيعات</div><div class="stat-val b" id="home-sales">0.00</div></div>
+    <div class="stat"><div class="stat-label">الربح الصافي</div><div class="stat-val g" id="home-profit">0.00</div></div>
+    <div class="stat wide"><div><div class="stat-label">التكلفة</div><div class="stat-val r" id="home-cost">0.00</div></div><div><div class="stat-label">صافي الكرتون</div><div class="stat-val" style="color:var(--amber)" id="home-net-cash">0.00</div></div></div>
   </div>
-
-  <!-- Filters -->
-  <div style="display:flex; gap:8px; overflow-x:auto; padding-bottom:10px; margin-bottom:10px; scrollbar-width:none;">
-    <button class="tab active" style="flex:initial; padding:6px 12px; font-size:12px;" onclick="filterList('all', this)">الكل</button>
-    <button class="tab" style="flex:initial; padding:6px 12px; font-size:12px;" onclick="filterList('completed', this)">مكتمل</button>
-    <button class="tab" style="flex:initial; padding:6px 12px; font-size:12px;" onclick="filterList('pending', this)">قيد الانتظار</button>
-    <button class="tab" style="flex:initial; padding:6px 12px; font-size:12px;" onclick="filterList('today', this)">📅 اليوم</button>
+  <div style="display:flex; gap:8px; overflow-x:auto; margin-bottom:10px;">
+    <button class="tab active" style="flex:initial; padding:6px 12px;" onclick="filterList('all', this)">الكل</button>
+    <button class="tab" style="flex:initial; padding:6px 12px;" onclick="filterList('completed', this)">مكتمل</button>
+    <button class="tab" style="flex:initial; padding:6px 12px;" onclick="filterList('pending', this)">قيد الانتظار</button>
+    <button class="tab" style="flex:initial; padding:6px 12px;" onclick="filterList('today', this)">📅 اليوم</button>
   </div>
-
-  <!-- List -->
-  <div id="orders-list">
-    <!-- Orders will be injected here -->
-  </div>
-  
-  <div id="empty-state" class="text-center hidden" style="padding: 40px 0; color: var(--muted);">
-    <div style="font-size: 40px; margin-bottom: 10px;">📭</div>
-    <p>لا توجد طلبات حالياً</p>
-    <p style="font-size:12px">اضغط على علامة + لإضافة طلب جديد</p>
-  </div>
+  <div id="orders-list"></div>
+  <div id="empty-state" class="text-center hidden" style="padding:40px 0; color:var(--muted);"><div style="font-size:40px;">📭</div><p>لا توجد طلبات</p></div>
 </div>
-
-<!-- ANALYTICS PAGE -->
 <div class="page" id="analytics-page">
-  <h2 style="margin-bottom:15px; font-size:18px;">📈 ملخص الشهر</h2>
-  <div class="stat wide" style="margin-bottom:15px; padding:20px;">
-    <div>
-      <div class="stat-label">أفضل زبون (بالقيمة)</div>
-      <div class="stat-val" id="best-customer">-</div>
-    </div>
-    <div style="text-align:left">
-      <div class="stat-label">متوسط الربح</div>
-      <div class="stat-val g" id="avg-profit">0.00</div>
-    </div>
-  </div>
-  
-  <div style="background:var(--surface); padding:15px; border-radius:16px; border:1px solid var(--border);">
-    <h3 style="font-size:14px; color:var(--muted); margin-bottom:10px;">توزيع الحالات</h3>
-    <div style="display:flex; height:10px; border-radius:5px; overflow:hidden;" id="status-bar">
-      <div style="background:var(--green); width:0%" id="bar-done"></div>
-      <div style="background:var(--amber); width:0%" id="bar-pending"></div>
-      <div style="background:var(--red); width:0%" id="bar-cancelled"></div>
-    </div>
-    <div style="display:flex; justify-content:space-between; margin-top:8px; font-size:11px; color:var(--muted);">
-      <span>✅ مكتمل</span>
-      <span>⏳ انتظار</span>
-      <span>❌ ملغي</span>
-    </div>
-  </div>
+  <h2 style="margin-bottom:15px;">📈 ملخص الشهر</h2>
+  <div class="stat wide" style="margin-bottom:15px;"><div><div class="stat-label">أفضل زبون</div><div class="stat-val" id="best-customer">-</div></div><div><div class="stat-label">متوسط الربح</div><div class="stat-val g" id="avg-profit">0.00</div></div></div>
+  <div style="background:var(--surface); padding:15px; border-radius:16px;"><h3 style="font-size:14px; margin-bottom:10px;">توزيع الحالات</h3><div style="display:flex; height:10px; border-radius:5px; overflow:hidden;"><div style="background:var(--green); width:0%" id="bar-done"></div><div style="background:var(--amber); width:0%" id="bar-pending"></div><div style="background:var(--red); width:0%" id="bar-cancelled"></div></div><div style="display:flex; justify-content:space-between; margin-top:8px; font-size:11px;"><span>✅ مكتمل</span><span>⏳ انتظار</span><span>❌ ملغي</span></div></div>
 </div>
-
-<!-- SETTINGS PAGE -->
 <div class="page" id="settings-page">
-  <div class="form-group">
-    <label class="form-label">إدارة البيانات</label>
-    <button class="btn-main" onclick="exportData()" style="background:var(--green); margin-bottom:10px;">📥 تصدير البيانات (نسخة احتياطية)</button>
-    <button class="btn-main" onclick="triggerFileImport()" style="background:var(--blue);">📤 استيراد نسخة سابقة</button>
-    <input type="file" id="import-file" accept=".json" style="display: none;" onchange="importData(this)">
-  </div>
-  
-  <div class="form-group" style="margin-top:30px;">
-    <label class="form-label">منطقة الخطر</label>
-    <button class="btn-main" onclick="resetAllData()" style="background:var(--red);">🗑️ حذف جميع البيانات</button>
-  </div>
+  <div class="form-group"><label class="form-label">إدارة البيانات</label><button class="btn-main" onclick="exportData()" style="background:var(--green); margin-bottom:10px;">📥 تصدير البيانات</button><button class="btn-main" onclick="triggerFileImport()" style="background:var(--blue);">📤 استيراد نسخة سابقة</button><input type="file" id="import-file" accept=".json" style="display:none;" onchange="importData(this)"></div>
+  <div class="form-group" style="margin-top:30px;"><label class="form-label">منطقة الخطر</label><button class="btn-main" onclick="resetAllData()" style="background:var(--red);">🗑️ حذف جميع البيانات</button></div>
 </div>
-
-<!-- FAB Add Button -->
 <button class="fab-add" onclick="openAddModal()">+</button>
-<!-- AI Button -->
 <button class="ai-btn" onclick="toggleAI()">🤖</button>
-
-<!-- ADD/EDIT MODAL -->
-<div class="modal-overlay" id="add-modal">
-  <div class="modal-content">
-    <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
-      <h2 id="modal-title" style="font-size:18px;">طلب جديد</h2>
-      <button onclick="closeModal()" style="background:none; border:none; color:var(--muted); font-size:24px;">✕</button>
-    </div>
-
-    <input type="hidden" id="edit-id">
-
-    <div class="form-group">
-      <label class="form-label">اسم الزبون</label>
-      <input type="text" id="inp-customer" class="form-input" placeholder="مثال: أحمد محمد">
-    </div>
-
-    <div class="row">
-      <div class="form-group">
-        <label class="form-label">سعر البيع</label>
-        <input type="number" id="inp-price" class="form-input" placeholder="0.00" oninput="calcLive()">
-      </div>
-      <div class="form-group">
-        <label class="form-label">تكلفة المنتج</label>
-        <input type="number" id="inp-cost" class="form-input" placeholder="0.00" oninput="calcLive()">
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label class="form-label">تكلفة الشحن (اختياري)</label>
-      <input type="number" id="inp-shipping" class="form-input" placeholder="0.00" value="0" oninput="calcLive()">
-    </div>
-
-    <div class="row">
-      <div class="form-group">
-        <label class="form-label">التاريخ</label>
-        <input type="date" id="inp-date" class="form-input">
-      </div>
-      <div class="form-group">
-        <label class="form-label">الحالة</label>
-        <select id="inp-status" class="form-select">
-          <option value="completed">مكتمل ✅</option>
-          <option value="pending">قيد الانتظار ⏳</option>
-          <option value="cancelled">ملغي ❌</option>
-          <option value="returned">مسترجع ↩️</option>
-        </select>
-      </div>
-    </div>
-
-    <div style="background:var(--surface2); padding:10px; border-radius:10px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center;">
-      <span style="font-size:13px; color:var(--muted);">الربح المتوقع:</span>
-      <span id="live-profit" style="font-size:18px; font-weight:800; color:var(--green);">0.00</span>
-    </div>
-
-    <button class="btn-main" onclick="saveOrder()">💾 حفظ الطلب</button>
-  </div>
-</div>
-
-<!-- AI MODAL -->
-<div class="modal-overlay" id="ai-modal" style="align-items:center; z-index:250;">
-  <div class="modal-content" style="border-radius:24px; max-height:90vh;">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-      <h3>🤖 المساعد الذكي</h3>
-      <button onclick="toggleAI()" style="background:none; border:none; color:var(--muted); font-size:24px;">✕</button>
-    </div>
-    <div class="chat-box" id="chat-history">
-      <div class="msg bot">أهلاً بك! أنا هنا لمساعدتك في إدارة تجارتك. اسألني عن أرباحك أو اطلب نصيحة.</div>
-    </div>
-    <div class="chat-input-area">
-      <input type="text" id="chat-inp" class="chat-input" placeholder="اكتب هنا..." onkeypress="if(event.key==='Enter') sendChat()">
-      <button class="chat-send" onclick="sendChat()">➤</button>
-    </div>
-  </div>
-</div>
-
-<!-- TOAST -->
-<div class="toast" id="toast">تم الحفظ بنجاح ✅</div>
-
+<div class="modal-overlay" id="add-modal"><div class="modal-content"><div style="display:flex; justify-content:space-between;"><h2 id="modal-title">طلب جديد</h2><button onclick="closeModal()" style="background:none; border:none; font-size:24px;">✕</button></div><input type="hidden" id="edit-id"><div class="form-group"><label class="form-label">اسم الزبون</label><input type="text" id="inp-customer" class="form-input"></div><div class="row"><div class="form-group"><label class="form-label">سعر البيع</label><input type="number" id="inp-price" class="form-input" oninput="calcLive()"></div><div class="form-group"><label class="form-label">تكلفة المنتج</label><input type="number" id="inp-cost" class="form-input" oninput="calcLive()"></div></div><div class="form-group"><label class="form-label">تكلفة الشحن</label><input type="number" id="inp-shipping" class="form-input" value="0" oninput="calcLive()"></div><div class="row"><div class="form-group"><label class="form-label">التاريخ</label><input type="date" id="inp-date" class="form-input"></div><div class="form-group"><label class="form-label">الحالة</label><select id="inp-status" class="form-select"><option value="completed">مكتمل</option><option value="pending">قيد الانتظار</option><option value="cancelled">ملغي</option><option value="returned">مسترجع</option></select></div></div><div style="background:var(--surface2); padding:10px; border-radius:10px; display:flex; justify-content:space-between;"><span>الربح المتوقع:</span><span id="live-profit" style="font-weight:800;">0.00</span></div><button class="btn-main" onclick="saveOrder()">💾 حفظ</button></div></div>
+<div class="modal-overlay" id="ai-modal" style="align-items:center;"><div class="modal-content"><div style="display:flex; justify-content:space-between;"><h3>🤖 المساعد</h3><button onclick="toggleAI()" style="background:none; border:none; font-size:24px;">✕</button></div><div class="chat-box" id="chat-history"><div class="msg bot">أهلاً! اسأل عن أرباحك أو النصائح.</div></div><div class="chat-input-area"><input type="text" id="chat-inp" class="chat-input" placeholder="اكتب..." onkeypress="if(event.key==='Enter') sendChat()"><button class="chat-send" onclick="sendChat()">➤</button></div></div></div>
+<div class="toast" id="toast">تم الحفظ</div>
 <script>
-  // --- STATE MANAGEMENT ---
   let orders = JSON.parse(localStorage.getItem('temu_orders_v2')) || [];
   let currentFilter = 'all';
-
-  // --- INIT ---
-  window.addEventListener('DOMContentLoaded', () => {
-    initTheme();
-    renderList();
-    updateStats();
-    
-    // Set default date
-    document.getElementById('inp-date').valueAsDate = new Date();
-    
-    // Register Service Worker
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js')
-        .then(() => console.log('Service Worker Registered'))
-        .catch(err => console.log('SW Registration Failed', err));
+  function saveToLocal() { localStorage.setItem('temu_orders_v2', JSON.stringify(orders)); }
+  function renderList() {
+    const container = document.getElementById('orders-list');
+    const empty = document.getElementById('empty-state');
+    let filtered = orders;
+    if (currentFilter === 'today') { const today = new Date().toISOString().slice(0,10); filtered = orders.filter(o => o.date === today); }
+    else if (currentFilter !== 'all') filtered = orders.filter(o => o.status === currentFilter);
+    if (!filtered.length) { container.innerHTML = ''; empty.classList.remove('hidden'); document.getElementById('total-orders-display').innerText = `${orders.length} طلبات`; return; }
+    empty.classList.add('hidden');
+    container.innerHTML = filtered.map(o => {
+      let statusClass = '', statusText = '';
+      if (o.status === 'completed') { statusClass = 'status-completed'; statusText = 'مكتمل'; }
+      else if (o.status === 'pending') { statusClass = 'status-pending'; statusText = 'قيد الانتظار'; }
+      else if (o.status === 'cancelled') { statusClass = 'status-cancelled'; statusText = 'ملغي'; }
+      else { statusClass = 'status-returned'; statusText = 'مسترجع'; }
+      return `<div class="order-card"><div class="order-header"><div><div class="order-customer">${escapeHtml(o.customer)}</div><div class="order-date">📅 ${o.date}</div></div><div><div class="status-badge ${statusClass}">${statusText}</div><div style="font-weight:800;color:var(--green)">+${o.profit.toFixed(2)}</div></div></div><div class="order-grid"><div class="o-cell"><span class="o-label">البيع</span><span>${o.price.toFixed(2)}</span></div><div class="o-cell"><span class="o-label">التكلفة</span><span>${o.totalCost.toFixed(2)}</span></div></div><div class="order-actions"><button class="btn-mini btn-clone" onclick="cloneOrder(${o.id})">📄 نسخ</button><button class="btn-mini btn-edit" onclick="editOrder(${o.id})">✏️ تعديل</button><button class="btn-mini btn-del" onclick="deleteOrder(${o.id})">🗑️</button></div></div>`;
+    }).join('');
+    document.getElementById('total-orders-display').innerText = `${orders.length} طلبات`;
+  }
+  function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+  function updateStats() {
+    const sales = orders.reduce((a,c)=> a + (c.status !== 'cancelled' ? c.price : 0), 0);
+    const cost = orders.reduce((a,c)=> a + (c.status !== 'cancelled' ? c.totalCost : 0), 0);
+    const profit = orders.reduce((a,c)=> a + (c.status === 'completed' ? c.profit : 0), 0);
+    document.getElementById('home-sales').innerText = sales.toFixed(2);
+    document.getElementById('home-cost').innerText = cost.toFixed(2);
+    document.getElementById('home-profit').innerText = profit.toFixed(2);
+    document.getElementById('home-net-cash').innerText = profit.toFixed(2);
+    if (orders.length) {
+      let custMap = {};
+      orders.forEach(o => { if(o.status !== 'cancelled') custMap[o.customer] = (custMap[o.customer]||0) + o.price; });
+      let best = Object.entries(custMap).sort((a,b)=>b[1]-a[1])[0];
+      document.getElementById('best-customer').innerText = best ? `${best[0]} (${best[1].toFixed(0)})` : '-';
+      let completed = orders.filter(o => o.status === 'completed');
+      let avg = completed.length ? completed.reduce((a,c)=>a+c.profit,0)/completed.length : 0;
+      document.getElementById('avg-profit').innerText = avg.toFixed(2);
+      let total = orders.length;
+      let pDone = (orders.filter(o=>o.status==='completed').length/total)*100;
+      let pPending = (orders.filter(o=>o.status==='pending').length/total)*100;
+      let pCancel = (orders.filter(o=>o.status==='cancelled').length/total)*100;
+      document.getElementById('bar-done').style.width = pDone+'%';
+      document.getElementById('bar-pending').style.width = pPending+'%';
+      document.getElementById('bar-cancelled').style.width = pCancel+'%';
+    } else {
+      document.getElementById('best-customer').innerText = '-';
+      document.getElementById('avg-profit').innerText = '0.00';
+      document.getElementById('bar-done').style.width = '0%';
+      document.getElementById('bar-pending').style.width = '0%';
+      document.getElementById('bar-cancelled').style.width = '0%';
     }
-  });
-
-  // --- THEME ---
-  function initTheme() {
-    const isLight = localStorage.getItem('temu_theme') === 'light';
-    if(isLight) document.body.classList.add('light-mode');
   }
-  function toggleTheme() {
-    document.body.classList.toggle('light-mode');
-    localStorage.setItem('temu_theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
-  }
-
-  // --- CORE FUNCTIONS ---
-
   function saveOrder() {
-    // Get values
     const id = document.getElementById('edit-id').value;
     const customer = document.getElementById('inp-customer').value.trim();
     const price = parseFloat(document.getElementById('inp-price').value);
@@ -524,433 +393,55 @@
     const shipping = parseFloat(document.getElementById('inp-shipping').value) || 0;
     const date = document.getElementById('inp-date').value;
     const status = document.getElementById('inp-status').value;
-
-    // Validation
-    if (!customer || isNaN(price)) {
-      showToast('يرجى إدخال اسم الزبون وسعر البيع', 'error');
-      return;
-    }
-
+    if (!customer || isNaN(price)) { showToast('أدخل اسم الزبون وسعر البيع','error'); return; }
     const totalCost = cost + shipping;
     const profit = price - totalCost;
-
-    const orderData = {
-      id: id ? Number(id) : Date.now(),
-      customer, price, cost, shipping, totalCost, profit, date, status
-    };
-
-    if (id) {
-      // Edit Mode
-      const index = orders.findIndex(o => o.id === Number(id));
-      if (index !== -1) orders[index] = orderData;
-      else showToast('حدث خطأ في العثور على الطلب', 'error');
-    } else {
-      // Add Mode
-      orders.unshift(orderData);
-    }
-
-    // Save & Update
-    localStorage.setItem('temu_orders_v2', JSON.stringify(orders));
-    closeModal();
-    renderList();
-    updateStats();
-    showToast(id ? 'تم تعديل الطلب ✏️' : 'تمت الإضافة بنجاح ✅');
+    const orderData = { id: id ? Number(id) : Date.now(), customer, price, cost, shipping, totalCost, profit, date, status };
+    if (id) { let idx = orders.findIndex(o=>o.id===Number(id)); if(idx!==-1) orders[idx]=orderData; }
+    else orders.unshift(orderData);
+    saveToLocal(); closeModal(); renderList(); updateStats(); showToast(id ? 'تم التعديل' : 'تمت الإضافة');
   }
-
-  function renderList() {
-    const container = document.getElementById('orders-list');
-    const emptyState = document.getElementById('empty-state');
-    let filtered = orders;
-
-    // Filtering
-    if (currentFilter === 'today') {
-      const today = new Date().toISOString().split('T')[0];
-      filtered = orders.filter(o => o.date === today);
-    } else if (currentFilter !== 'all') {
-      filtered = orders.filter(o => o.status === currentFilter);
-    }
-
-    if (filtered.length === 0) {
-      container.innerHTML = '';
-      emptyState.classList.remove('hidden');
-      return;
-    }
-
-    emptyState.classList.add('hidden');
-    
-    container.innerHTML = filtered.map(o => {
-      let statusClass = '';
-      let statusText = '';
-      
-      switch(o.status) {
-        case 'completed': statusClass = 'status-completed'; statusText = 'مكتمل'; break;
-        case 'pending': statusClass = 'status-pending'; statusText = 'قيد الانتظار'; break;
-        case 'cancelled': statusClass = 'status-cancelled'; statusText = 'ملغي'; break;
-        case 'returned': statusClass = 'status-returned'; statusText = 'مسترجع'; break;
-        default: statusClass = 'status-pending'; statusText = o.status;
-      }
-
-      return `
-      <div class="order-card">
-        <div class="order-header">
-          <div>
-            <div class="order-customer">${escapeHtml(o.customer)}</div>
-            <div class="order-date">📅 ${o.date}</div>
-          </div>
-          <div style="text-align:left">
-            <div class="status-badge ${statusClass}">${statusText}</div>
-            <div style="font-weight:800; font-size:16px; margin-top:4px; color:var(--green)">+${o.profit.toFixed(2)}</div>
-          </div>
-        </div>
-        
-        <div class="order-grid">
-          <div class="o-cell">
-            <span class="o-label">البيع</span>
-            <span class="o-val b">${o.price.toFixed(2)}</span>
-          </div>
-          <div class="o-cell">
-            <span class="o-label">التكلفة</span>
-            <span class="o-val r">${o.totalCost.toFixed(2)}</span>
-          </div>
-        </div>
-
-        <div class="order-actions">
-          <button class="btn-mini btn-clone" onclick="cloneOrder(${o.id})">📄 نسخ</button>
-          <button class="btn-mini btn-edit" onclick="editOrder(${o.id})">✏️ تعديل</button>
-          <button class="btn-mini btn-del" onclick="deleteOrder(${o.id})">🗑️</button>
-        </div>
-      </div>
-      `;
-    }).join('');
-    
-    document.getElementById('total-orders-display').textContent = `${orders.length} طلبات`;
-  }
-
-  // Helper function to escape HTML
-  function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/[&<>]/g, function(m) {
-      if (m === '&') return '&amp;';
-      if (m === '<') return '&lt;';
-      if (m === '>') return '&gt;';
-      return m;
-    }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
-      return c;
-    });
-  }
-
-  function updateStats() {
-    const sales = orders.reduce((acc, curr) => acc + (curr.status !== 'cancelled' ? curr.price : 0), 0);
-    const cost = orders.reduce((acc, curr) => acc + (curr.status !== 'cancelled' ? curr.totalCost : 0), 0);
-    const profit = orders.reduce((acc, curr) => acc + (curr.status === 'completed' ? curr.profit : 0), 0);
-    
-    // Net Cash (Cash in hand approx): Sales - Cost of items sold (assuming profit is taken out)
-    // Or simpler: Total Profit
-    const netCash = profit; 
-
-    document.getElementById('home-sales').textContent = sales.toFixed(2);
-    document.getElementById('home-cost').textContent = cost.toFixed(2);
-    document.getElementById('home-profit').textContent = profit.toFixed(2);
-    document.getElementById('home-net-cash').textContent = netCash.toFixed(2);
-
-    // Analytics
-    if (orders.length > 0) {
-      // Best Customer
-      const customerMap = {};
-      orders.forEach(o => {
-        if(o.status !== 'cancelled') customerMap[o.customer] = (customerMap[o.customer] || 0) + o.price;
-      });
-      const best = Object.entries(customerMap).sort((a,b) => b[1] - a[1])[0];
-      document.getElementById('best-customer').textContent = best ? `${best[0]} (${best[1].toFixed(0)})` : '-';
-
-      // Avg Profit
-      const completed = orders.filter(o => o.status === 'completed');
-      const avg = completed.length ? (completed.reduce((a,c)=>a+c.profit,0) / completed.length) : 0;
-      document.getElementById('avg-profit').textContent = avg.toFixed(2);
-
-      // Status Bar
-      const total = orders.length || 1;
-      const pDone = (orders.filter(o=>o.status==='completed').length / total) * 100;
-      const pPending = (orders.filter(o=>o.status==='pending').length / total) * 100;
-      const pCancel = (orders.filter(o=>o.status==='cancelled').length / total) * 100;
-      
-      document.getElementById('bar-done').style.width = pDone + '%';
-      document.getElementById('bar-pending').style.width = pPending + '%';
-      document.getElementById('bar-cancelled').style.width = pCancel + '%';
-    } else {
-      document.getElementById('best-customer').textContent = '-';
-      document.getElementById('avg-profit').textContent = '0.00';
-      document.getElementById('bar-done').style.width = '0%';
-      document.getElementById('bar-pending').style.width = '0%';
-      document.getElementById('bar-cancelled').style.width = '0%';
-    }
-  }
-
-  // --- ACTIONS ---
-
-  function deleteOrder(id) {
-    if(confirm('هل أنت متأكد من الحذف؟')) {
-      orders = orders.filter(o => o.id !== id);
-      localStorage.setItem('temu_orders_v2', JSON.stringify(orders));
-      renderList();
-      updateStats();
-      showToast('تم الحذف 🗑️');
-    }
-  }
-
-  function editOrder(id) {
-    const order = orders.find(o => o.id === id);
-    if(!order) return;
-
-    document.getElementById('edit-id').value = order.id;
-    document.getElementById('inp-customer').value = order.customer;
-    document.getElementById('inp-price').value = order.price;
-    document.getElementById('inp-cost').value = order.cost;
-    document.getElementById('inp-shipping').value = order.shipping;
-    document.getElementById('inp-date').value = order.date;
-    document.getElementById('inp-status').value = order.status;
-    
-    calcLive();
-    
-    document.getElementById('modal-title').textContent = 'تعديل الطلب';
-    openModal('add-modal');
-  }
-
-  function cloneOrder(id) {
-    const order = orders.find(o => o.id === id);
-    if(!order) return;
-
-    document.getElementById('edit-id').value = ''; // Reset ID to create new
-    document.getElementById('inp-customer').value = order.customer;
-    document.getElementById('inp-price').value = order.price;
-    document.getElementById('inp-cost').value = order.cost;
-    document.getElementById('inp-shipping').value = order.shipping;
-    document.getElementById('inp-date').valueAsDate = new Date(); // Reset date to today
-    document.getElementById('inp-status').value = 'pending'; // Reset status
-    
-    calcLive();
-
-    document.getElementById('modal-title').textContent = 'نسخ طلب جديد';
-    openModal('add-modal');
-    showToast('تم نسخ البيانات، اضغط حفظ للإضافة 📄');
-  }
-
-  // --- UI HELPERS ---
-
-  function openAddModal() {
-    // Reset form
-    document.getElementById('edit-id').value = '';
-    document.getElementById('inp-customer').value = '';
-    document.getElementById('inp-price').value = '';
-    document.getElementById('inp-cost').value = '';
-    document.getElementById('inp-shipping').value = '0';
-    document.getElementById('inp-date').valueAsDate = new Date();
-    document.getElementById('inp-status').value = 'completed';
-    calcLive();
-    
-    document.getElementById('modal-title').textContent = 'طلب جديد';
-    openModal('add-modal');
-    // Auto focus customer
-    setTimeout(() => document.getElementById('inp-customer').focus(), 300);
-  }
-
-  function openModal(id) {
-    document.getElementById(id).classList.add('open');
-  }
-
-  function closeModal() {
-    document.querySelectorAll('.modal-overlay').forEach(el => el.classList.remove('open'));
-  }
-
-  function filterList(type, btn) {
-    currentFilter = type;
-    // Update UI tabs
-    const parent = btn.parentElement;
-    if(parent) {
-      Array.from(parent.children).forEach(t => t.classList.remove('active'));
-    }
-    btn.classList.add('active');
-    renderList();
-  }
-
-  function switchTab(pageId) {
-    // Update active tab styling
-    const tabs = document.querySelectorAll('.tabs .tab');
-    tabs.forEach(tab => {
-      tab.classList.remove('active');
-    });
-    event.target.classList.add('active');
-    
-    // Show selected page
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.getElementById(pageId + '-page').classList.add('active');
-  }
-
-  function calcLive() {
-    const price = parseFloat(document.getElementById('inp-price').value) || 0;
-    const cost = parseFloat(document.getElementById('inp-cost').value) || 0;
-    const ship = parseFloat(document.getElementById('inp-shipping').value) || 0;
-    const profit = price - (cost + ship);
-    
-    const el = document.getElementById('live-profit');
-    el.textContent = profit.toFixed(2);
-    el.style.color = profit >= 0 ? 'var(--green)' : 'var(--red)';
-  }
-
-  function showToast(msg, type = 'success') {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.className = `toast show ${type}`;
-    setTimeout(() => t.classList.remove('show'), 3000);
-  }
-
-  // --- FIXED DATA MANAGEMENT (IMPORT/EXPORT) ---
-  
-  function triggerFileImport() {
-    // Trigger the hidden file input
-    document.getElementById('import-file').click();
-  }
-
-  function exportData() {
-    try {
-      // Convert orders to JSON string
-      const dataStr = JSON.stringify(orders, null, 2);
-      
-      // Create a Blob with proper MIME type
-      const blob = new Blob([dataStr], { type: 'application/json' });
-      
-      // Create download link
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      
-      // Name file with current date
-      const date = new Date().toISOString().slice(0,10);
-      a.download = `Temu_Backup_${date}.json`;
-      
-      // Append to body, click, and remove
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      
-      // Clean up the object URL
-      URL.revokeObjectURL(url);
-      
-      showToast('تم تحميل النسخة الاحتياطية بنجاح 📥');
-    } catch (e) {
-      console.error('Export error:', e);
-      showToast('حدث خطأ أثناء التصدير، جرب مرة أخرى', 'error');
-    }
-  }
-
+  function deleteOrder(id) { if(confirm('حذف؟')) { orders = orders.filter(o=>o.id!==id); saveToLocal(); renderList(); updateStats(); showToast('تم الحذف'); } }
+  function editOrder(id) { let o = orders.find(o=>o.id===id); if(!o) return; document.getElementById('edit-id').value=o.id; document.getElementById('inp-customer').value=o.customer; document.getElementById('inp-price').value=o.price; document.getElementById('inp-cost').value=o.cost; document.getElementById('inp-shipping').value=o.shipping; document.getElementById('inp-date').value=o.date; document.getElementById('inp-status').value=o.status; calcLive(); document.getElementById('modal-title').innerText='تعديل الطلب'; openModal('add-modal'); }
+  function cloneOrder(id) { let o = orders.find(o=>o.id===id); if(!o) return; document.getElementById('edit-id').value=''; document.getElementById('inp-customer').value=o.customer; document.getElementById('inp-price').value=o.price; document.getElementById('inp-cost').value=o.cost; document.getElementById('inp-shipping').value=o.shipping; document.getElementById('inp-date').valueAsDate=new Date(); document.getElementById('inp-status').value='pending'; calcLive(); document.getElementById('modal-title').innerText='نسخ طلب'; openModal('add-modal'); showToast('انسخ البيانات ثم احفظ'); }
+  function openAddModal() { document.getElementById('edit-id').value=''; document.getElementById('inp-customer').value=''; document.getElementById('inp-price').value=''; document.getElementById('inp-cost').value=''; document.getElementById('inp-shipping').value='0'; document.getElementById('inp-date').valueAsDate=new Date(); document.getElementById('inp-status').value='completed'; calcLive(); document.getElementById('modal-title').innerText='طلب جديد'; openModal('add-modal'); }
+  function openModal(id) { document.getElementById(id).classList.add('open'); }
+  function closeModal() { document.querySelectorAll('.modal-overlay').forEach(el=>el.classList.remove('open')); }
+  function filterList(type, btn) { currentFilter=type; let parent=btn.parentElement; if(parent) Array.from(parent.children).forEach(t=>t.classList.remove('active')); btn.classList.add('active'); renderList(); }
+  function switchTab(pageId) { document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active')); event.target.classList.add('active'); document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); document.getElementById(pageId+'-page').classList.add('active'); }
+  function calcLive() { let price=parseFloat(document.getElementById('inp-price').value)||0; let cost=parseFloat(document.getElementById('inp-cost').value)||0; let ship=parseFloat(document.getElementById('inp-shipping').value)||0; let profit=price-(cost+ship); let span=document.getElementById('live-profit'); span.innerText=profit.toFixed(2); span.style.color=profit>=0?'var(--green)':'var(--red)'; }
+  function showToast(msg, type='success') { let t=document.getElementById('toast'); t.innerText=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3000); }
+  function exportData() { try { let dataStr=JSON.stringify(orders,null,2); let blob=new Blob([dataStr],{type:'application/json'}); let url=URL.createObjectURL(blob); let a=document.createElement('a'); a.href=url; a.download=`Temu_Backup_${new Date().toISOString().slice(0,10)}.json`; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url); showToast('تم التصدير'); } catch(e) { showToast('خطأ في التصدير','error'); } }
+  function triggerFileImport() { document.getElementById('import-file').click(); }
   function importData(input) {
     const file = input.files[0];
-    if (!file) return;
-    
-    // Validate file type
-    if (file.type !== 'application/json' && !file.name.endsWith('.json')) {
-      showToast('الرجاء اختيار ملف JSON صالح', 'error');
-      input.value = ''; // Reset input
-      return;
-    }
-    
+    if(!file) return;
+    if(!file.name.endsWith('.json')) { showToast('اختر ملف JSON صالح','error'); input.value=''; return; }
     const reader = new FileReader();
-    
     reader.onload = function(e) {
       try {
-        // Parse the JSON data
-        const importedData = JSON.parse(e.target.result);
-        
-        // Validate that it's an array
-        if (Array.isArray(importedData)) {
-          if (confirm(`سيتم استبدال البيانات الحالية (${orders.length} طلب) بـ ${importedData.length} طلب. هل أنت متأكد؟`)) {
-            // Replace current orders with imported data
-            orders = importedData;
-            // Save to localStorage
-            localStorage.setItem('temu_orders_v2', JSON.stringify(orders));
-            // Refresh UI
+        const imported = JSON.parse(e.target.result);
+        if(Array.isArray(imported)) {
+          if(confirm(`استبدال البيانات الحالية (${orders.length}) بـ ${imported.length} طلب؟`)) {
+            orders = imported;
+            saveToLocal();
             renderList();
             updateStats();
-            showToast(`تم استيراد ${importedData.length} طلب بنجاح ✅`);
+            showToast(`تم استيراد ${imported.length} طلب`);
           }
-        } else {
-          showToast('الملف المحدد لا يحتوي على بيانات صالحة (يجب أن يكون مصفوفة من الطلبات)', 'error');
-        }
-      } catch (err) {
-        console.error('Import parse error:', err);
-        showToast('خطأ في قراءة الملف: تأكد من أنه ملف JSON صالح', 'error');
-      } finally {
-        // Clear the file input to allow re-importing the same file
-        input.value = '';
-      }
-    };
-    
-    reader.onerror = function() {
-      showToast('حدث خطأ أثناء قراءة الملف', 'error');
+        } else { showToast('الملف لا يحتوي على مصفوفة صالحة','error'); }
+      } catch(err) { showToast('خطأ في قراءة الملف: JSON غير صالح','error'); }
       input.value = '';
     };
-    
-    // Read the file as text
+    reader.onerror = () => { showToast('فشل قراءة الملف','error'); input.value=''; };
     reader.readAsText(file, 'UTF-8');
   }
-
-  function resetAllData() {
-    if(confirm('تحذير: سيتم حذف كل شيء نهائياً! هل أنت متأكد؟')) {
-      orders = [];
-      localStorage.removeItem('temu_orders_v2');
-      renderList();
-      updateStats();
-      showToast('تم مسح جميع البيانات 🗑️', 'error');
-    }
-  }
-
-  // --- AI ASSISTANT ---
-  function toggleAI() {
-    const modal = document.getElementById('ai-modal');
-    modal.classList.toggle('open');
-  }
-
-  function sendChat() {
-    const inp = document.getElementById('chat-inp');
-    const txt = inp.value.trim();
-    if(!txt) return;
-    
-    addChatMsg(txt, 'user');
-    inp.value = '';
-
-    // Simple AI Logic
-    setTimeout(() => {
-      let reply = '';
-      const lower = txt.toLowerCase();
-      const totalProfit = orders.reduce((a,c)=>a+(c.status==='completed'?c.profit:0), 0);
-      const totalSales = orders.reduce((a,c)=>a+(c.status!=='cancelled'?c.price:0), 0);
-
-      if(lower.includes('ربح') || lower.includes('فلوس')) {
-        reply = `أرباحك الحالية هي <b>${totalProfit.toFixed(2)}</b> درهم. إجمالي المبيعات: ${totalSales.toFixed(2)}.`;
-      } else if(lower.includes('مرحبا') || lower.includes('سلام')) {
-        reply = 'أهلاً بك! هل تريد معرفة أرباحك أم تريد نصيحة؟';
-      } else if(lower.includes('نصيحة')) {
-        reply = '💡 نصيحة اليوم: حافظ على هامش ربح لا يقل عن 30% لتغطية مصاريف الإعلانات والاسترجاعات.';
-      } else {
-        reply = 'أنا ما زلت أتعلم، لكن يمكنك سؤالي عن "إجمالي الربح" أو "المبيعات".';
-      }
-      addChatMsg(reply, 'bot');
-    }, 600);
-  }
-
-  function addChatMsg(txt, type) {
-    const box = document.getElementById('chat-history');
-    const div = document.createElement('div');
-    div.className = `msg ${type}`;
-    div.innerHTML = txt;
-    box.appendChild(div);
-    box.scrollTop = box.scrollHeight;
-  }
-  
-  // Hide alert function (if needed)
-  function hideAlert() {
-    document.getElementById('alert-box').classList.remove('show');
-  }
+  function resetAllData() { if(confirm('حذف كل البيانات نهائياً؟')) { orders=[]; saveToLocal(); renderList(); updateStats(); showToast('تم المسح','error'); } }
+  function toggleTheme() { document.body.classList.toggle('light-mode'); localStorage.setItem('temu_theme', document.body.classList.contains('light-mode')?'light':'dark'); }
+  function toggleAI() { document.getElementById('ai-modal').classList.toggle('open'); }
+  function sendChat() { let inp=document.getElementById('chat-inp'); let txt=inp.value.trim(); if(!txt) return; addChatMsg(txt,'user'); inp.value=''; setTimeout(()=>{ let lower=txt.toLowerCase(); let totalProfit=orders.reduce((a,c)=>a+(c.status==='completed'?c.profit:0),0); let totalSales=orders.reduce((a,c)=>a+(c.status!=='cancelled'?c.price:0),0); let reply=''; if(lower.includes('ربح')) reply=`أرباحك: ${totalProfit.toFixed(2)} درهم. المبيعات: ${totalSales.toFixed(2)}.`; else if(lower.includes('مرحبا')) reply='أهلاً! اسأل عن الأرباح أو النصائح.'; else if(lower.includes('نصيحة')) reply='💡 حافظ على هامش ربح 30% على الأقل.'; else reply='اسأل عن "الربح" أو "نصيحة".'; addChatMsg(reply,'bot'); },500); }
+  function addChatMsg(txt,type) { let box=document.getElementById('chat-history'); let div=document.createElement('div'); div.className=`msg ${type}`; div.innerText=txt; box.appendChild(div); box.scrollTop=box.scrollHeight; }
+  window.addEventListener('DOMContentLoaded',()=>{ if(localStorage.getItem('temu_theme')==='light') document.body.classList.add('light-mode'); renderList(); updateStats(); document.getElementById('inp-date').valueAsDate=new Date(); if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(e=>console.log('SW failed',e)); });
 </script>
 </body>
 </html>
